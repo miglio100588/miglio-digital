@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alberto Migliorini — Product Owner & Digital Leader</title>
+  <meta name="description" content="Product Owner & Product Manager | Lean Agent @ Servizi e Prodotti Digitali, Credem Banca. Appassionato di innovazione digitale, AI e design.">
+  <meta property="og:title" content="Alberto Migliorini — Digital Product Leader">
+  <meta property="og:description" content="Ricerco, progetto e sviluppo soluzioni digitali innovative. AI first.">
+  <meta property="og:url" content="https://www.miglio.digital/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,200..700;1,9..40,200..700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── VARIABLES ── */
+    :root {
+      --bg:          #060810;
+      --bg2:         #0c0f1e;
+      --border:      rgba(224, 180, 80, 0.13);
+      --text:        #ede9df;
+      --muted:       #6b6760;
+      --subtle:      #2e2d2a;
+      --gold:        #e8c050;
+      --gold-dim:    rgba(232, 192, 80, 0.10);
+      --gold-glow:   rgba(232, 192, 80, 0.25);
+      --blue-dim:    rgba(80, 140, 220, 0.06);
+      --ff-display:  'Fraunces', Georgia, serif;
+      --ff-body:     'DM Sans', system-ui, sans-serif;
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-body);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── CURSOR ── */
+    #cur, #cur-ring {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    #cur {
+      width: 7px; height: 7px;
+      background: var(--gold);
+      transition: width .2s, height .2s, background .2s;
+    }
+    #cur-ring {
+      width: 38px; height: 38px;
+      border: 1px solid rgba(232, 192, 80, 0.35);
+      transition: width .35s var(--ease-out), height .35s var(--ease-out),
+                  border-color .3s, opacity .3s;
+    }
+    body.hover #cur { width: 5px; height: 5px; }
+    body.hover #cur-ring { width: 58px; height: 58px; border-color: var(--gold); }
+    body.clicking #cur { background: #fff; }
+
+    /* ── FIXED LAYERS ── */
+    .layer-noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 8000;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: .022;
+    }
+    .layer-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1;
+      background-image:
+        linear-gradient(rgba(232,192,80,.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,192,80,.028) 1px, transparent 1px);
+      background-size: 76px 76px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 1.4rem 2.4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(6,8,16,.92) 0%, transparent 100%);
+    }
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-weight: 500; font-size: .95rem;
+      letter-spacing: .18em; text-transform: uppercase;
+    }
+    .nav-logo b { color: var(--gold); font-weight: 500; }
+    .nav-li {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .52rem 1.3rem;
+      border: 1px solid var(--border);
+      border-radius: 3rem;
+      font-size: .72rem; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-dim);
+      transition: background .25s, color .25s, border-color .25s, box-shadow .25s;
+    }
+    .nav-li:hover {
+      background: var(--gold); color: var(--bg);
+      border-color: var(--gold);
+      box-shadow: 0 0 24px var(--gold-glow);
+    }
+    .nav-li svg { width: 13px; height: 13px; fill: currentColor; }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 2rem 2.4rem 5.5rem;
+      overflow: hidden; z-index: 2;
+    }
+    .hero-aura {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 75% 65% at 85% 10%, rgba(232,192,80,.07) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 15% 90%, rgba(80,140,220,.05) 0%, transparent 65%),
+        var(--bg);
+    }
+    .hero-eyebrow {
+      font-size: .65rem; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.4rem;
+      opacity: 0; animation: slideUp .8s var(--ease-out) .15s forwards;
+    }
+    .hero-name {
+      font-family: var(--ff-display);
+      font-weight: 200;
+      font-size: clamp(4.2rem, 12vw, 12rem);
+      line-height: .88; letter-spacing: -.02em;
+      opacity: 0; animation: slideUp .9s var(--ease-out) .3s forwards;
+    }
+    .hero-name em {
+      display: block; font-style: italic;
+      color: var(--gold);
+      font-weight: 100;
+    }
+    .hero-meta {
+      margin-top: 2.4rem;
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      align-items: flex-start;
+      opacity: 0; animation: slideUp .8s var(--ease-out) .5s forwards;
+    }
+    .hero-role strong {
+      display: block; font-weight: 500; font-size: 1rem;
+      color: var(--text); margin-bottom: .25rem;
+    }
+    .hero-role span {
+      font-size: .82rem; color: var(--muted); line-height: 1.6;
+    }
+    .hero-contacts {
+      display: flex; flex-direction: column; gap: .6rem;
+      padding-top: .15rem;
+    }
+    .hero-contact-row {
+      display: flex; align-items: center; gap: .45rem;
+      font-size: .7rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hero-contact-row svg {
+      width: 11px; height: 11px;
+      stroke: var(--gold); fill: none; stroke-width: 2; flex-shrink: 0;
+    }
+
+    /* scrolling ticker */
+    .hero-ticker {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      border-top: 1px solid var(--border);
+      overflow: hidden; height: 38px;
+      display: flex; align-items: center;
+      opacity: 0; animation: fadeIn 1s ease .9s forwards;
+    }
+    .ticker-track {
+      display: flex; gap: 3rem;
+      animation: ticker 22s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      font-size: .6rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--subtle); flex-shrink: 0;
+    }
+    .ticker-item b { color: var(--gold); font-weight: 400; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* scroll cue */
+    .hero-scroll-cue {
+      position: absolute; right: 2.4rem; bottom: 5rem;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      opacity: 0; animation: fadeIn 1.2s ease 1.1s forwards;
+    }
+    .scroll-label {
+      font-size: .55rem; letter-spacing: .3em; text-transform: uppercase; color: var(--subtle);
+    }
+    .scroll-line {
+      width: 1px; height: 56px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollAnim 2.2s ease-in-out infinite;
+      transform-origin: top;
+    }
+    @keyframes scrollAnim {
+      0%,100% { transform: scaleY(0); opacity: 0; transform-origin: top; }
+      40% { transform: scaleY(1); opacity: 1; transform-origin: top; }
+      60% { transform: scaleY(1); opacity: 1; transform-origin: bottom; }
+      99% { transform: scaleY(0); opacity: 0; transform-origin: bottom; }
+    }
+
+    /* ── SECTION COMMON ── */
+    .wrap {
+      max-width: 1160px; margin: 0 auto; padding: 0 2.4rem;
+    }
+    section.full { padding: 7rem 0; position: relative; z-index: 2; }
+    .sec-label {
+      display: flex; align-items: center; gap: 1.2rem;
+      font-size: .6rem; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 3.5rem;
+    }
+    .sec-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── ABOUT ── */
+    #about .about-inner {
+      display: grid; grid-template-columns: 55fr 45fr; gap: 5rem; align-items: start;
+    }
+    .about-quote {
+      font-family: var(--ff-display);
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.55; color: var(--text);
+    }
+    .about-quote em {
+      font-style: normal; color: var(--gold);
+    }
+    .about-quote cite {
+      display: block; margin-top: 2rem;
+      font-style: normal; font-size: .7rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); font-family: var(--ff-body);
+    }
+    .about-details {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .detail-row {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 110px 1fr; gap: 1rem;
+    }
+    .detail-row:first-child { border-top: 1px solid var(--border); }
+    .d-label {
+      font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--subtle);
+      padding-top: .1rem;
+    }
+    .d-val { font-size: .88rem; color: var(--muted); }
+    .d-val a:hover { color: var(--gold); }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--bg2); }
+    .exp-list { display: flex; flex-direction: column; }
+    .exp-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 0 2rem;
+      padding: 2.2rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .25s;
+      cursor: default;
+    }
+    .exp-row:first-child { border-top: 1px solid var(--border); }
+    .exp-row:hover { background: var(--gold-dim); margin: 0 -2.4rem; padding-left: 2.4rem; padding-right: 2.4rem; }
+    .exp-num {
+      font-family: var(--ff-display);
+      font-size: 2.8rem; font-weight: 100;
+      color: var(--subtle); line-height: 1; padding-top: .15rem;
+      transition: color .3s;
+    }
+    .exp-row:hover .exp-num { color: var(--gold); }
+    .exp-body {}
+    .exp-title {
+      font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: .25rem;
+    }
+    .exp-company { font-size: .84rem; color: var(--gold); margin-bottom: .3rem; }
+    .exp-period {
+      font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--subtle);
+    }
+    .exp-tag {
+      display: inline-block; margin-top: .55rem;
+      padding: .18rem .65rem;
+      border: 1px solid var(--border); border-radius: 2rem;
+      font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--subtle);
+    }
+
+    /* ── PROJECTS ── */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.4rem;
+    }
+    .proj-card {
+      position: relative;
+      background: rgba(255,255,255,.018);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1.8rem;
+      overflow: hidden;
+      transition: border-color .3s, transform .35s var(--ease-out);
+      cursor: default;
+    }
+    .proj-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .proj-card:hover { border-color: rgba(232,192,80,.3); transform: translateY(-4px); }
+    .proj-card:hover::before { opacity: 1; }
+    .proj-year {
+      font-size: .6rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem;
+    }
+    .proj-title {
+      font-size: 1rem; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: .8rem;
+    }
+    .proj-desc { font-size: .8rem; line-height: 1.75; color: var(--muted); }
+
+    /* ── EDUCATION ── */
+    #education { background: var(--bg2); }
+    .edu-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
+    .edu-col h3 {
+      font-family: var(--ff-display); font-weight: 300; font-style: italic;
+      font-size: 1.3rem; color: var(--text); margin-bottom: 1.8rem;
+    }
+    .edu-item { padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+    .edu-item:last-child { border-bottom: none; }
+    .edu-name { font-size: .9rem; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: .25rem; }
+    .edu-info { font-size: .75rem; color: var(--muted); }
+    .edu-score {
+      display: inline-block; margin-top: .4rem;
+      font-size: .65rem; letter-spacing: .12em;
+      color: var(--gold);
+    }
+
+    /* ── SKILLS STRIP ── */
+    #skills { padding: 4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); z-index: 2; position: relative; }
+    .skills-track-wrap { overflow: hidden; }
+    .skills-track {
+      display: flex; gap: 0;
+      animation: skillsTick 28s linear infinite;
+      white-space: nowrap;
+    }
+    .skill-pill {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .5rem 1.6rem;
+      border-right: 1px solid var(--border);
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); flex-shrink: 0;
+    }
+    .skill-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    @keyframes skillsTick {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── LINKEDIN CTA ── */
+    #cta {
+      position: relative; min-height: 55vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; z-index: 2; padding: 5rem 2.4rem;
+    }
+    .cta-aura {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(232,192,80,.08) 0%, transparent 70%);
+    }
+    .cta-frame {
+      position: absolute; inset: 2.5rem;
+      border: 1px solid var(--border); border-radius: 4px; pointer-events: none;
+    }
+    .cta-frame::before, .cta-frame::after {
+      content: ''; position: absolute;
+      width: 12px; height: 12px;
+      border-color: var(--gold); border-style: solid;
+    }
+    .cta-frame::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+    .cta-frame::after { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+    .cta-inner { position: relative; text-align: center; max-width: 580px; }
+    .cta-sup {
+      font-size: .62rem; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.4rem;
+    }
+    .cta-headline {
+      font-family: var(--ff-display);
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 200; font-style: italic;
+      line-height: 1.05; color: var(--text); margin-bottom: 1.4rem;
+    }
+    .cta-sub {
+      font-size: .88rem; color: var(--muted); line-height: 1.8;
+      max-width: 440px; margin: 0 auto 3rem;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: .75rem;
+      padding: 1rem 2.8rem;
+      background: var(--gold); color: var(--bg);
+      font-weight: 600; font-size: .8rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      border-radius: 3rem;
+      transition: transform .3s var(--ease-out), box-shadow .3s, background .25s;
+    }
+    .cta-btn:hover {
+      background: #f5d47a;
+      transform: scale(1.05);
+      box-shadow: 0 0 50px var(--gold-glow);
+    }
+    .cta-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 1.8rem 2.4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1160px; margin: 0 auto;
+    }
+    .ft-left { font-size: .68rem; color: var(--subtle); }
+    .ft-right { font-size: .68rem; color: var(--subtle); letter-spacing: .1em; text-transform: uppercase; }
+
+    /* ── REVEAL ── */
+    .r {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .75s var(--ease-out), transform .75s var(--ease-out);
+    }
+    .r.on { opacity: 1; transform: translateY(0); }
+    .r[data-d="1"] { transition-delay: .08s; }
+    .r[data-d="2"] { transition-delay: .16s; }
+    .r[data-d="3"] { transition-delay: .24s; }
+    .r[data-d="4"] { transition-delay: .32s; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.4rem; }
+      #hero { padding: 1.4rem 1.4rem 5rem; }
+      .wrap { padding: 0 1.4rem; }
+      .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .edu-cols { grid-template-columns: 1fr; gap: 3rem; }
+      .exp-row:hover { margin: 0 -1.4rem; padding-left: 1.4rem; padding-right: 1.4rem; }
+      .cta-frame { inset: 1rem; }
+      footer { flex-direction: column; gap: .4rem; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .hero-name { font-size: clamp(3.4rem, 16vw, 5rem); }
+      .exp-num { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Fixed visual layers -->
+<div class="layer-noise" aria-hidden="true"></div>
+<div class="layer-grid" aria-hidden="true"></div>
+
+<!-- Custom cursor -->
+<div id="cur" aria-hidden="true"></div>
+<div id="cur-ring" aria-hidden="true"></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav role="navigation" aria-label="Navigazione principale">
+  <a href="#" class="nav-logo">A<b>.</b>Migliorini</a>
+  <a href="https://www.linkedin.com/in/albertomigliorini88/" target="_blank" rel="noopener noreferrer" class="nav-li" aria-label="Visita il profilo LinkedIn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    LinkedIn
+  </a>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header id="hero" role="banner">
+  <div class="hero-aura" aria-hidden="true"></div>
+
+  <p class="hero-eyebrow" aria-label="Ruolo professionale">
+    Product Owner &nbsp;·&nbsp; Digital Product Leader &nbsp;·&nbsp; Lean Agent
+  </p>
+
+  <h1 class="hero-name">
+    Alberto<br><em>Migliorini</em>
+  </h1>
+
+  <div class="hero-meta">
+    <div class="hero-role">
+      <strong>Product Owner &amp; Product Manager</strong>
+      <span>Lean Agent @ Servizi e Prodotti Digitali<br>Credem Banca</span>
+    </div>
+    <div class="hero-contacts">
+      <div class="hero-contact-row">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Rovigo · Reggio Emilia, Italia
+      </div>
+      <div class="hero-contact-row">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a href="mailto:alberto.migliorini88@gmail.com">alberto.migliorini88@gmail.com</a>
+      </div>
+      <div class="hero-contact-row">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 2 4.18 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <a href="tel:+393405771533">+39 340 577 1533</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="hero-ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <!-- duplicated for seamless loop -->
+      <span class="ticker-item"><b>Product Owner</b> · Credem Banca</span>
+      <span class="ticker-item"><b>PSPO I</b> · Scrum.org</span>
+      <span class="ticker-item"><b>Ingegneria dell'Informazione</b> · Univ. Ferrara</span>
+      <span class="ticker-item"><b>AI First</b> · Digital Innovation</span>
+      <span class="ticker-item"><b>Digital Banking</b> · 12+ anni</span>
+      <span class="ticker-item"><b>miglio.digital</b></span>
+      <span class="ticker-item"><b>Product Owner</b> · Credem Banca</span>
+      <span class="ticker-item"><b>PSPO I</b> · Scrum.org</span>
+      <span class="ticker-item"><b>Ingegneria dell'Informazione</b> · Univ. Ferrara</span>
+      <span class="ticker-item"><b>AI First</b> · Digital Innovation</span>
+      <span class="ticker-item"><b>Digital Banking</b> · 12+ anni</span>
+      <span class="ticker-item"><b>miglio.digital</b></span>
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="hero-scroll-cue" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</header>
+
+<!-- ═══════════════ CHI SONO ═══════════════ -->
+<section id="about" class="full">
+  <div class="wrap">
+    <p class="sec-label">Chi sono</p>
+    <div class="about-inner">
+      <blockquote class="about-quote r">
+        "Sono un professionista appassionato di <em>novità digitali</em>, classe&nbsp;'88.
+        Ricerco, progetto e sviluppo soluzioni innovative per migliorare l'esperienza
+        delle persone. La mia curiosità mi spinge a sperimentare quotidianamente con
+        <em>nuove tecnologie, AI first</em>, osservando come le persone interagiscono
+        con il design e il funzionamento degli strumenti digitali."
+        <cite>Alberto Migliorini</cite>
+      </blockquote>
+      <div class="about-details r" data-d="1">
+        <div class="detail-row">
+          <span class="d-label">Ruolo</span>
+          <span class="d-val">Product Owner & Product Manager · Lean Agent</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">Azienda</span>
+          <span class="d-val">Credem Banca — Servizi e Prodotti Digitali</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">Posizione</span>
+          <span class="d-val">Rovigo — Reggio Emilia, Italia</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">Focus</span>
+          <span class="d-val">Product Strategy · Digital Banking · AI & Innovation</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">Email</span>
+          <span class="d-val"><a href="mailto:alberto.migliorini88@gmail.com">alberto.migliorini88@gmail.com</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ESPERIENZA ═══════════════ -->
+<section id="experience" class="full">
+  <div class="wrap">
+    <p class="sec-label">Esperienza professionale</p>
+    <div class="exp-list">
+
+      <article class="exp-row r">
+        <div class="exp-num" aria-hidden="true">'22</div>
+        <div class="exp-body">
+          <p class="exp-title">Product Owner & Product Manager — Lean Agent</p>
+          <p class="exp-company">Credem Banca — Business Unit Commerciale</p>
+          <p class="exp-period">Aprile 2022 → Presente</p>
+          <span class="exp-tag">Servizi & Prodotti Digitali</span>
+        </div>
+      </article>
+
+      <article class="exp-row r" data-d="1">
+        <div class="exp-num" aria-hidden="true">'21</div>
+        <div class="exp-body">
+          <p class="exp-title">Analista IT — Touchpoints</p>
+          <p class="exp-company">Credem Banca — Area Sistemi Informativi</p>
+          <p class="exp-period">Luglio 2021 → Aprile 2022</p>
+          <span class="exp-tag">IT Analysis</span>
+        </div>
+      </article>
+
+      <article class="exp-row r" data-d="2">
+        <div class="exp-num" aria-hidden="true">'14</div>
+        <div class="exp-body">
+          <p class="exp-title">Digital Channel Specialist</p>
+          <p class="exp-company">Cassa di Risparmio di Cento — Direzione Commerciale</p>
+          <p class="exp-period">Gennaio 2014 → Luglio 2021</p>
+          <span class="exp-tag">Digital Channels</span>
+        </div>
+      </article>
+
+      <article class="exp-row r" data-d="3">
+        <div class="exp-num" aria-hidden="true">'12</div>
+        <div class="exp-body">
+          <p class="exp-title">Addetto — Servizio Mercati e Prodotti</p>
+          <p class="exp-company">Cassa di Risparmio di Cento</p>
+          <p class="exp-period">Marzo 2012 → Dicembre 2013</p>
+        </div>
+      </article>
+
+      <article class="exp-row r" data-d="4">
+        <div class="exp-num" aria-hidden="true">'05</div>
+        <div class="exp-body">
+          <p class="exp-title">Cassiere Stagionale — 7 stagioni</p>
+          <p class="exp-company">Camping Village Marina di Venezia</p>
+          <p class="exp-period">Giugno–Settembre 2005 → 2011</p>
+          <span class="exp-tag">Prima esperienza</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROGETTI ═══════════════ -->
+<section id="projects" class="full">
+  <div class="wrap">
+    <p class="sec-label">Progetti selezionati</p>
+    <div class="proj-grid">
+
+      <div class="proj-card r">
+        <p class="proj-year">2018 — 2019</p>
+        <h3 class="proj-title">Internet Banking & App Mobile BEE BANK</h3>
+        <p class="proj-desc">Coordinamento per avviamento, personalizzazione, testing, comunicazione e formazione alla rete di vendita del nuovo Internet Banking privati e della nuova app di mobile banking di Cassa di Risparmio di Cento.</p>
+      </div>
+
+      <div class="proj-card r" data-d="1">
+        <p class="proj-year">2018</p>
+        <h3 class="proj-title">Restyling Web — I.FI.VE.R. S.p.A</h3>
+        <p class="proj-desc">Coordinamento del restyling grafico e riorganizzazione dei contenuti del sito web di I.FI.VE.R. S.p.A, Gruppo Caricento, specializzata in prestiti tramite cessione del quinto.</p>
+      </div>
+
+      <div class="proj-card r" data-d="2">
+        <p class="proj-year">2015</p>
+        <h3 class="proj-title">Restyling Web — Cassa di Risparmio di Cento</h3>
+        <p class="proj-desc">Coordinamento tra Direzione Commerciale e fornitore esterno per il restyling grafico e la riorganizzazione dei contenuti del sito istituzionale della banca.</p>
+      </div>
+
+      <div class="proj-card r" data-d="3">
+        <p class="proj-year">2011</p>
+        <h3 class="proj-title">Sistema Automatizzato — Deployment Bancario</h3>
+        <p class="proj-desc">Progetto e sviluppo di un sistema automatizzato per installazione e personalizzazione di computer in ambiente bancario con NSIS e AutoIt su Windows XP Pro.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SKILLS TICKER ═══════════════ -->
+<div id="skills" aria-hidden="true">
+  <div class="skills-track-wrap">
+    <div class="skills-track">
+      <!-- doubled for seamless loop -->
+      <span class="skill-pill"><span class="skill-dot"></span>Product Strategy</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Scrum / Agile</span>
+      <span class="skill-pill"><span class="skill-dot"></span>UX Research</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Digital Banking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>AI & Automation</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Google Analytics</span>
+      <span class="skill-pill"><span class="skill-dot"></span>SQL / SSRS</span>
+      <span class="skill-pill"><span class="skill-dot"></span>SEO & CMS</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Mobile Banking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Lean Thinking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Stakeholder Mgmt</span>
+      <span class="skill-pill"><span class="skill-dot"></span>PSPO I Certified</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Product Strategy</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Scrum / Agile</span>
+      <span class="skill-pill"><span class="skill-dot"></span>UX Research</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Digital Banking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>AI & Automation</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Google Analytics</span>
+      <span class="skill-pill"><span class="skill-dot"></span>SQL / SSRS</span>
+      <span class="skill-pill"><span class="skill-dot"></span>SEO & CMS</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Mobile Banking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Lean Thinking</span>
+      <span class="skill-pill"><span class="skill-dot"></span>Stakeholder Mgmt</span>
+      <span class="skill-pill"><span class="skill-dot"></span>PSPO I Certified</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FORMAZIONE ═══════════════ -->
+<section id="education" class="full">
+  <div class="wrap">
+    <p class="sec-label">Formazione &amp; Certificazioni</p>
+    <div class="edu-cols">
+
+      <div class="edu-col r">
+        <h3>Istruzione</h3>
+        <div class="edu-item">
+          <p class="edu-name">Laurea Triennale — Ingegneria dell'Informazione<br><small style="font-weight:300;color:var(--muted)">Indirizzo Informatica</small></p>
+          <p class="edu-info">Università degli Studi di Ferrara</p>
+          <span class="edu-score">103 / 110</span>
+        </div>
+        <div class="edu-item">
+          <p class="edu-name">Diploma Perito Industriale Capotecnico<br><small style="font-weight:300;color:var(--muted)">Indirizzo Informatico</small></p>
+          <p class="edu-info">ITIS F. Viola, Rovigo</p>
+          <span class="edu-score">100 / 100</span>
+        </div>
+      </div>
+
+      <div class="edu-col r" data-d="1">
+        <h3>Certificazioni</h3>
+        <div class="edu-item">
+          <p class="edu-name">Professional Scrum Product Owner™ I (PSPO I)</p>
+          <p class="edu-info">Scrum.org · Novembre 2024</p>
+        </div>
+        <div class="edu-item">
+          <p class="edu-name">Google Analytics Avanzato</p>
+          <p class="edu-info">Google · Marzo 2019</p>
+        </div>
+        <div class="edu-item">
+          <p class="edu-name">Google Analytics per Principianti</p>
+          <p class="edu-info">Google · Luglio 2018</p>
+        </div>
+        <div class="edu-item">
+          <p class="edu-name">Eccellenze in Digitale</p>
+          <p class="edu-info">Google · Ottobre 2017</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ LINKEDIN CTA ═══════════════ -->
+<div id="cta" role="complementary" aria-labelledby="cta-headline">
+  <div class="cta-aura" aria-hidden="true"></div>
+  <div class="cta-frame" aria-hidden="true"></div>
+  <div class="cta-inner r">
+    <p class="cta-sup">Parliamo di prodotto, digitale &amp; innovazione</p>
+    <p class="cta-headline" id="cta-headline">
+      Connettiamoci<br>su LinkedIn
+    </p>
+    <p class="cta-sub">
+      Sono sempre aperto a nuove conversazioni su prodotto, digital banking e AI.
+      Trovami su LinkedIn per connetterci e scambiare idee.
+    </p>
+    <a href="https://www.linkedin.com/in/albertomigliorini88/" target="_blank" rel="noopener noreferrer" class="cta-btn" aria-label="Apri il profilo LinkedIn di Alberto Migliorini">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      Visita il mio profilo
+    </a>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <span class="ft-left">© 2026 Alberto Migliorini</span>
+  <span class="ft-right">miglio.digital</span>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+  /* ── Custom cursor ── */
+  const cur = document.getElementById('cur');
+  const ring = document.getElementById('cur-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+  });
+
+  (function rafCursor() {
+    rx += (mx - rx) * .13;
+    ry += (my - ry) * .13;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(rafCursor);
+  })();
+
+  document.querySelectorAll('a, button, .proj-card, .exp-row').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hover'));
+  });
+  document.addEventListener('mousedown', () => document.body.classList.add('clicking'));
+  document.addEventListener('mouseup',   () => document.body.classList.remove('clicking'));
+
+  /* ── Scroll reveal ── */
+  const rEls = document.querySelectorAll('.r');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('on');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  rEls.forEach(el => io.observe(el));
+
+  /* ── Smooth cursor hide on mobile ── */
+  if ('ontouchstart' in window) {
+    cur.style.display = 'none';
+    ring.style.display = 'none';
+    document.body.style.cursor = '';
+  }
+</script>
+
+</body>
+</html>
