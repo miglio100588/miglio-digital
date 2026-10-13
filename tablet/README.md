@@ -6,6 +6,8 @@ Pagina a schermo intero per Galaxy Tab 2 (Android 6, Fully Kiosk Browser).
 - F1: Jolpica API live
 - Milan / Italia / U21 + canali: foglio Google "Tablet Meteo – Sport", aggiornato ogni mattina da uno scheduled task
 - Daylight: sfondo e luminosità seguono alba/tramonto (fasi dawn, day, golden, dusk, night + notte fonda 23-6)
+- Radar RainViewer centrato su Boara Polesine (ultima ora animata, refresh 10 min) su mappa Esri Dark Gray
+- Previsioni 6 giorni in una striscia compatta
 - Grafico 24 ore con min/max, pioggia oraria, notte ombreggiata; avvisi grandine/temporali/vento/gelo calcolati da Open-Meteo
 - Allerte ufficiali (Protezione Civile Veneto/ARPAV/MeteoAlarm) e sport: righe del foglio, aggiornate dal task alle 6:52 e 15:52
 - Sport: i 2 eventi più vicini (F1, Milan, Italia, U21)
