@@ -5,158 +5,110 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meteo Rovigo</title>
 <style>
-html,body{margin:0;height:100%;background:#0E1116;color:#E8EDF2;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;overflow:hidden}
-#app{display:flex;height:100%;box-sizing:border-box;padding:3vh 4.5vw 3vh 3vw;transition:opacity 2s}
-#app.dim{opacity:.4}
-.left{flex:0 0 42%;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #232A33;padding-right:3vw;box-sizing:border-box}
-.clock{font-size:19vh;font-weight:300;line-height:1;letter-spacing:-.02em}
-.date{font-size:4.5vh;color:#8A96A3;margin-top:1vh}
-.now{display:flex;align-items:center}
-.now .ic{width:22vh;height:22vh}
-.temp{font-size:16vh;font-weight:300;line-height:1;margin-left:2vw}
-.desc{font-size:4.5vh;margin:1vh 0}
-.meta{font-size:3.4vh;color:#8A96A3;line-height:1.6}
-.meta b{color:#E8EDF2;font-weight:400}
-.right{flex:1;display:flex;flex-direction:column;padding-left:3vw;min-width:0}
-h2{font-size:2.8vh;font-weight:500;color:#8A96A3;text-transform:uppercase;letter-spacing:.12em;margin:0 0 1.5vh}
-.hours{display:flex;justify-content:space-between;margin-bottom:3vh}
-.h{text-align:center;flex:1}
-.h .t{font-size:3vh;color:#8A96A3}
-.h .ic{width:7vh;height:7vh;display:block;margin:.8vh auto}
-.h .v{font-size:3.8vh}
-.h .p{font-size:2.6vh;color:#6FB7FF;min-height:3vh}
-.days{flex:1;display:flex;flex-direction:column}
-.d{display:flex;align-items:center;font-size:4.2vh;border-top:1px solid #1C222A;flex:1}
-.d .n{width:17%}
-.d .ic{width:8vh;height:8vh;margin-right:1.5vw}
-.d .p{width:13%;color:#6FB7FF;font-size:3.2vh}
-.d .mn{width:11%;color:#8A96A3;text-align:right}
-.bar{flex:1;height:.8vh;background:#1C222A;margin:0 1.5vw;border-radius:1vh;position:relative}
-.bar i{position:absolute;top:0;bottom:0;border-radius:1vh;background:linear-gradient(90deg,#6FB7FF,#FFC93C)}
-.d .mx{width:10%}
-.sport{margin-top:2vh;border-top:1px solid #232A33;padding-top:1.5vh}
-.s{display:flex;align-items:baseline;font-size:3.3vh;line-height:1.45;white-space:nowrap;overflow:hidden}
-.s .k{width:6vh;flex:0 0 6vh;font-size:2.4vh;font-weight:700;color:#0E1116;background:#8A96A3;border-radius:.6vh;text-align:center;margin-right:1.2vw;line-height:3.2vh;align-self:center}
-.s .k.f1{background:#E10600;color:#fff}.s .k.mi{background:#C8102E;color:#fff}.s .k.it{background:#1F6FD6;color:#fff}.s .k.u21{background:#4C9BE8;color:#fff}
-.s .w{color:#E8EDF2;flex:0 0 auto;max-width:45%;overflow:hidden;text-overflow:ellipsis}
-.s .q{color:#FFC93C;margin-left:1vw;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis}
-.s .c{color:#8A96A3;margin-left:1vw;font-size:2.8vh;flex:0 3 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.foot{font-size:2.4vh;color:#5B6672;margin-top:1vh}
-.err{color:#FF8A7A}
-
-/* ===== arco solare ===== */
-.sun{margin:2vh 0 0}
-.sun svg{display:block;width:100%;height:15vh}
-.sunrow{display:flex;justify-content:space-between;font-size:3vh;color:#8A96A3;margin-top:.5vh}
-.sunrow b{color:#E8EDF2;font-weight:400}
-.arcbase{stroke:#2C3540}.arcdone{stroke:#FFC93C}.hz{stroke:#2C3540}
-#tbtn{position:fixed;right:.6vw;top:.6vh;width:5.4vh;height:5.4vh;border-radius:50%;border:1px solid #2C3540;background:transparent;color:#5B6672;font-size:2.4vh;font-weight:700;padding:0;z-index:9;outline:none}
-
-/* ===== MODERNO · GIORNO ===== */
-body.day{background:#EEF2F6;color:#1B2430}
-body.day .date,body.day .meta,body.day h2,body.day .h .t,body.day .d .mn,body.day .s .c,body.day .foot,body.day .sunrow{color:#5E6B78}
-body.day .meta b,body.day .s .w,body.day .sunrow b{color:#1B2430}
-body.day .left,body.day .sport{border-color:#D3DAE2}
-body.day .d{border-color:#DDE3EA}
-body.day .bar{background:#D3DAE2}
-body.day .h .p,body.day .d .p{color:#1F6FD6}
-body.day .s .q{color:#B5651D}
-body.day .arcbase,body.day .hz{stroke:#C9D2DC}
-body.day .arcdone{stroke:#F0A500}
-body.day svg [fill="#D5DEE8"]{fill:#A9B6C4}
-body.day svg [fill="#F4E7B0"]{fill:#C9B25A}
-body.day svg [stroke="#B8C2CC"]{stroke:#8E9AA6}
-body.day #tbtn{border-color:#C9D2DC;color:#5E6B78}
-
-/* ===== ANNI 70 (comune) ===== */
-body.t70{font-family:"Cooper Black","Noto Serif","Droid Serif",Georgia,serif}
-body.t70 #app{padding-top:5vh}
-body.t70 .stripes{display:block}
-.stripes{display:none;position:fixed;left:0;right:0;top:0;height:3.2vh;z-index:5}
-.stripes i{display:block;height:25%}
-body.t70 .clock{font-weight:700;letter-spacing:.01em}
-body.t70 .temp{font-weight:700}
-body.t70 h2{letter-spacing:.2em;font-style:italic}
-body.t70 .bar{height:1.4vh;border-radius:2vh}
-body.t70 .s .k{border-radius:2vh;font-family:Arial,sans-serif}
-body.t70 .s .k.f1{background:#C8402A}body.t70 .s .k.mi{background:#9C2A1A}
-body.t70 .s .k.it{background:#2E7D6B}body.t70 .s .k.u21{background:#5BA08E}
-body.t70 .arcdone{stroke-width:5}
-body.t70 #tbtn{font-family:inherit;top:3.8vh}
-
-/* ===== ANNI 70 · NOTTE ===== */
-body.t70.night{background:#2B1A10;color:#F6D7A7}
-body.t70.night .stripes i:nth-child(1){background:#F2B134}body.t70.night .stripes i:nth-child(2){background:#E8702A}
-body.t70.night .stripes i:nth-child(3){background:#C8402A}body.t70.night .stripes i:nth-child(4){background:#7A3416}
-body.t70.night .date,body.t70.night .meta,body.t70.night h2,body.t70.night .h .t,body.t70.night .d .mn,body.t70.night .s .c,body.t70.night .foot,body.t70.night .sunrow{color:#C9925A}
-body.t70.night .meta b,body.t70.night .s .w,body.t70.night .sunrow b{color:#F6D7A7}
-body.t70.night .left,body.t70.night .sport,body.t70.night .d{border-color:#5A3820}
-body.t70.night .bar{background:#4A2C17}
-body.t70.night .bar i{background:linear-gradient(90deg,#E8702A,#F2B134)}
-body.t70.night .h .p,body.t70.night .d .p{color:#E8702A}
-body.t70.night .s .q{color:#F2B134}
-body.t70.night .arcbase,body.t70.night .hz{stroke:#5A3820}
-body.t70.night .arcdone{stroke:#F2B134}
-body.t70.night #tbtn{border-color:#E8702A;color:#F2B134}
-
-/* ===== ANNI 70 · GIORNO ===== */
-body.t70.day{background:#F3E3C3;color:#4A2C17}
-body.t70.day .stripes i:nth-child(1){background:#C8402A}body.t70.day .stripes i:nth-child(2){background:#E8702A}
-body.t70.day .stripes i:nth-child(3){background:#F2B134}body.t70.day .stripes i:nth-child(4){background:#7A8B3A}
-body.t70.day .date,body.t70.day .meta,body.t70.day h2,body.t70.day .h .t,body.t70.day .d .mn,body.t70.day .s .c,body.t70.day .foot,body.t70.day .sunrow{color:#9C5B2E}
-body.t70.day .meta b,body.t70.day .s .w,body.t70.day .sunrow b{color:#4A2C17}
-body.t70.day .left,body.t70.day .sport,body.t70.day .d{border-color:#DDBF8E}
-body.t70.day .bar{background:#E6CFA4}
-body.t70.day .bar i{background:linear-gradient(90deg,#7A8B3A,#E8702A)}
-body.t70.day .h .p,body.t70.day .d .p{color:#C8402A}
-body.t70.day .s .q{color:#C8402A}
-body.t70.day .arcbase,body.t70.day .hz{stroke:#DDBF8E}
-body.t70.day .arcdone{stroke:#E8702A}
-body.t70.day svg [fill="#D5DEE8"]{fill:#C9A877}
-body.t70.day svg [fill="#FFC93C"],body.t70.day svg [stroke="#FFC93C"]{fill:#E8702A;stroke:#E8702A}
-body.t70.day #tbtn{border-color:#C8402A;color:#C8402A}
+html,body{margin:0;height:100%;overflow:hidden}
+body{color:#fff;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;background:#070B14;
+  background-image:linear-gradient(180deg,#070B14 0%,#121A2B 100%);transition:background 3s}
+body.p-dawn  {background-image:linear-gradient(180deg,#232A55 0%,#7A4C78 55%,#E3875F 100%)}
+body.p-day   {background-image:linear-gradient(180deg,#1F5FA6 0%,#3F86CC 60%,#7DB6E8 100%)}
+body.p-golden{background-image:linear-gradient(180deg,#2D4F8C 0%,#B0627A 60%,#F0A04B 100%)}
+body.p-dusk  {background-image:linear-gradient(180deg,#0F1430 0%,#3D2A5C 60%,#9B4E5E 100%)}
+body.p-night {background-image:linear-gradient(180deg,#070B14 0%,#121A2B 100%)}
+#shade{position:fixed;left:0;top:0;right:0;bottom:0;background:#000;opacity:0;pointer-events:none;transition:opacity 3s;z-index:20}
+#app{display:flex;height:100%;box-sizing:border-box;padding:2.5vh 2.5vw}
+.mut{color:rgba(255,255,255,.66)}
+.card{background:rgba(0,0,0,.20);border-radius:1.6vh}
+/* colonna sinistra */
+.left{flex:0 0 36%;display:flex;flex-direction:column;padding-right:2.5vw;box-sizing:border-box}
+.clock{font-size:15.5vh;font-weight:300;line-height:.95;letter-spacing:-.02em}
+.date{font-size:4.2vh;margin-top:.6vh}
+.sun{margin-top:1.5vh}
+.sun svg{display:block;width:100%;height:12vh}
+.sunrow{display:flex;justify-content:space-between;font-size:2.9vh;margin-top:.3vh}
+.sunrow b{color:#fff;font-weight:500}
+.now{display:flex;align-items:center;margin-top:1vh}
+.now .ic{width:12vh;height:12vh}
+.temp{font-size:11.5vh;font-weight:300;line-height:1;margin-left:1.5vw}
+.desc{font-size:4vh;margin:.5vh 0 .8vh}
+.meta{font-size:3.1vh;line-height:1.5}
+.meta b{color:#fff;font-weight:500}
+.lsafe{flex:1}
+/* colonna destra */
+.right{flex:1;display:flex;flex-direction:column;min-width:0}
+h2{font-size:2.5vh;font-weight:500;text-transform:uppercase;letter-spacing:.14em;margin:0 0 .8vh;color:rgba(255,255,255,.7)}
+.alerts{margin-bottom:.6vh}
+.al{display:flex;align-items:center;font-size:2.8vh;line-height:1.3;padding:.5vh 1.2vw;border-radius:1.2vh;margin-bottom:.6vh;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al i{font-style:normal;font-weight:700;margin-right:1vw}
+.al.y{background:rgba(242,177,52,.88);color:#2A1D00}
+.al.o{background:rgba(232,112,42,.92);color:#fff}
+.al.r{background:rgba(200,40,40,.92);color:#fff}
+.chart{padding:1vh 1vw .4vh}
+.chart svg{display:block;width:100%;height:33vh}
+.days{margin-top:1.2vh;padding:.4vh 1vw}
+.d{display:flex;align-items:center;font-size:3.5vh;height:5.7vh;border-top:1px solid rgba(255,255,255,.12)}
+.d:first-child{border-top:0}
+.d .n{width:12%}
+.d .ic{width:5.4vh;height:5.4vh;margin-right:.8vw}
+.d .p{width:17%;font-size:2.7vh;color:#BFE3FF;white-space:nowrap}
+.d .mn{width:8%;text-align:right;color:#BFE3FF}
+.bar{flex:1;height:.8vh;background:rgba(255,255,255,.18);margin:0 1.2vw;border-radius:1vh;position:relative}
+.bar i{position:absolute;top:0;bottom:0;border-radius:1vh;background:linear-gradient(90deg,#7CC4FF,#FFC93C)}
+.d .mx{width:8%;color:#FFD98A}
+.d .g{width:11%;text-align:right;font-size:2.6vh;color:rgba(255,255,255,.75);white-space:nowrap}
+.sport{margin-top:1.6vh}
+.s{margin-bottom:1vh}
+.s1{display:flex;align-items:center;font-size:3.1vh;line-height:1.35;white-space:nowrap;overflow:hidden}
+.s2{font-size:2.7vh;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:calc(6vh + 1vw)}
+.k{flex:0 0 6vh;font-size:2.2vh;font-weight:700;border-radius:.6vh;text-align:center;margin-right:1vw;line-height:3vh}
+.k.f1{background:#E10600}.k.mi{background:#C8102E}.k.it{background:#1F6FD6}.k.u21{background:#4C9BE8}
+.s1 .w{overflow:hidden;text-overflow:ellipsis}
+.s2 .q{color:#FFD98A}
+.s2 .c{color:rgba(255,255,255,.7)}
+.foot{font-size:2.2vh;margin-top:auto;padding-top:.6vh;color:rgba(255,255,255,.55)}
+.err{color:#FFB4A8}
+/* zone libere per le scritte di Fully (SAFE_ZONES) */
+body.safe .rsafe{height:7.5vh;flex:0 0 7.5vh}
+body.safe .lsafe{flex:0 0 9vh}
+.rsafe{height:0}
 </style>
 </head>
-<body>
-<div class="stripes"><i></i><i></i><i></i><i></i></div>
+<body class="p-night">
+<div id="shade"></div>
 <div id="app">
   <div class="left">
-    <div>
-      <div class="clock" id="clock">--:--</div>
-      <div class="date" id="date"></div>
-      <div class="sun"><div id="sunSvg"></div><div class="sunrow" id="sunRow"></div></div>
-    </div>
-    <div>
-      <div class="now"><div id="nowIc"></div><div class="temp" id="nowT">--°</div></div>
-      <div class="desc" id="desc">Caricamento…</div>
-      <div class="meta" id="meta"></div>
-    </div>
+    <div class="clock" id="clock">--:--</div>
+    <div class="date mut" id="date"></div>
+    <div class="sun"><div id="sunSvg"></div><div class="sunrow mut" id="sunRow"></div></div>
+    <div class="now"><div id="nowIc"></div><div class="temp" id="nowT">--°</div></div>
+    <div class="desc" id="desc">Caricamento…</div>
+    <div class="meta mut" id="meta"></div>
+    <div class="sport" id="sport"></div>
+    <div class="lsafe"></div>
   </div>
   <div class="right">
-    <h2>Prossime ore</h2>
-    <div class="hours" id="hours"></div>
-    <h2>Prossimi giorni</h2>
-    <div class="days" id="days"></div>
-    <div class="sport" id="sport"></div>
+    <div class="rsafe"></div>
+    <div class="alerts" id="alerts"></div>
+    <div class="card chart"><h2 id="chTitle">Prossime 24 ore</h2><div id="chart"></div></div>
+    <div class="card days" id="days"></div>
     <div class="foot" id="foot"></div>
   </div>
 </div>
-<button id="tbtn" onclick="toggleTheme()">70s</button>
 <script>
 // ===== CONFIG =====
 var LAT = 45.0698, LON = 11.7902, CITY = 'Rovigo';
-var REFRESH_MIN = 15;          // aggiornamento meteo
-var NIGHT_FROM = 23, NIGHT_TO = 6; // fascia oraria schermo attenuato
+var REFRESH_MIN = 15;               // aggiornamento meteo
 var SHEET_ID = '1Vyjea-9AzZGETDihlg3CWY4TMPLNdmLtUFvVvVxDaUc'; // foglio "Tablet Meteo – Sport"
 var SPORT_REFRESH_MIN = 30;
+var SAFE_ZONES = true;              // lascia libere le zone delle scritte di Fully (false se hai la licenza)
+var DEEP_NIGHT_FROM = 23, DEEP_NIGHT_TO = 6; // schermo più scuro
+var SHADE = {day: 0, golden: 0, dawn: 0.1, dusk: 0.15, night: 0.3, deep: 0.55};
+var BRIGHT = {day: 200, golden: 170, dawn: 110, dusk: 90, night: 50, deep: 12}; // solo se attiva la JS API di Fully
 // ==================
 
 var Q = '/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
-  '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day' +
-  '&hourly=temperature_2m,weather_code,precipitation_probability,is_day' +
-  '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset' +
+  '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day' +
+  '&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,wind_gusts_10m,cape,is_day' +
+  '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_gusts_10m_max,sunrise,sunset' +
   '&timezone=Europe%2FRome&forecast_days=6';
-// https prima, http come ripiego (certificati vecchi su Android 6)
 var HOSTS = ['https://api.open-meteo.com', 'http://api.open-meteo.com'];
 var hostIdx = 0;
 
@@ -167,6 +119,11 @@ var MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','ag
 function $(id){ return document.getElementById(id); }
 function pad(n){ return (n < 10 ? '0' : '') + n; }
 function hm(s){ return s.substr(11, 5); }
+function hm2(d){ return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+function loc(s){ var a = s.split('T'), d = a[0].split('-'), t = (a[1] || '00:00').split(':');
+  return new Date(+d[0], +d[1] - 1, +d[2], +t[0], +t[1]); }
+function dur(ms){ var m = Math.max(0, Math.round(ms / 60000)), h = Math.floor(m / 60);
+  return (h ? h + 'h ' : '') + pad(m % 60) + 'm'; }
 
 function desc(c){
   if (c === 0) return 'Sereno';
@@ -188,111 +145,180 @@ function desc(c){
   if (c === 96 || c === 99) return 'Temporale con grandine';
   return '—';
 }
-
-function card(deg){
-  var d = ['N','NE','E','SE','S','SO','O','NO'];
-  return d[Math.round(deg / 45) % 8];
-}
+function card(deg){ var d = ['N','NE','E','SE','S','SO','O','NO']; return d[Math.round(deg / 45) % 8]; }
 
 // ---- icone SVG ----
-function sun(cx, cy, r){
+function sunI(cx, cy, r){
   var s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#FFC93C"/>';
   for (var i = 0; i < 8; i++){
     var a = i * Math.PI / 4, c = Math.cos(a), n = Math.sin(a);
-    s += '<line x1="' + (cx + c * (r + 4)) + '" y1="' + (cy + n * (r + 4)) +
-         '" x2="' + (cx + c * (r + 9)) + '" y2="' + (cy + n * (r + 9)) +
+    s += '<line x1="' + (cx + c * (r + 4)) + '" y1="' + (cy + n * (r + 4)) + '" x2="' + (cx + c * (r + 9)) + '" y2="' + (cy + n * (r + 9)) +
          '" stroke="#FFC93C" stroke-width="3" stroke-linecap="round"/>';
   }
   return s;
 }
-function moon(cx, cy, r){
+function moonI(cx, cy, r){
   cx = cx + r * 0.3;
   return '<path d="M' + cx + ' ' + (cy - r) + ' A' + r + ' ' + r + ' 0 0 0 ' + cx + ' ' + (cy + r) +
          ' A' + (r * 1.25) + ' ' + (r * 1.25) + ' 0 0 1 ' + cx + ' ' + (cy - r) + 'z" fill="#F4E7B0"/>';
 }
 function cloud(dy, col){
-  return '<path transform="translate(0,' + dy + ')" d="M20 48h26a11 11 0 0 0 1-22a15 15 0 0 0-28-2a12 12 0 0 0 1 24z" fill="' + (col || '#D5DEE8') + '"/>';
+  return '<path transform="translate(0,' + dy + ')" d="M20 48h26a11 11 0 0 0 1-22a15 15 0 0 0-28-2a12 12 0 0 0 1 24z" fill="' + (col || '#E6EDF5') + '"/>';
 }
-function drops(){
-  return '<g stroke="#6FB7FF" stroke-width="3" stroke-linecap="round">' +
-    '<line x1="24" y1="46" x2="21" y2="55"/><line x1="34" y1="46" x2="31" y2="55"/><line x1="44" y1="46" x2="41" y2="55"/></g>';
-}
-function flakes(){
-  return '<g fill="#FFFFFF"><circle cx="23" cy="50" r="2.6"/><circle cx="33" cy="55" r="2.6"/><circle cx="43" cy="50" r="2.6"/></g>';
-}
-function bolt(){
-  return '<polygon points="33,42 25,54 32,54 28,63 40,49 33,49 37,42" fill="#FFD84D"/>';
-}
-function icon(c, day){
+function drops(){ return '<g stroke="#7CC4FF" stroke-width="3" stroke-linecap="round"><line x1="24" y1="46" x2="21" y2="55"/><line x1="34" y1="46" x2="31" y2="55"/><line x1="44" y1="46" x2="41" y2="55"/></g>'; }
+function flakes(){ return '<g fill="#FFFFFF"><circle cx="23" cy="50" r="2.6"/><circle cx="33" cy="55" r="2.6"/><circle cx="43" cy="50" r="2.6"/></g>'; }
+function hail(){ return '<g fill="#DDF3FF" stroke="#7CC4FF" stroke-width="1"><circle cx="24" cy="51" r="3.2"/><circle cx="35" cy="56" r="3.2"/><circle cx="45" cy="50" r="3.2"/></g>'; }
+function bolt(){ return '<polygon points="33,42 25,54 32,54 28,63 40,49 33,49 37,42" fill="#FFD84D"/>'; }
+function iconSvg(c, day){
   var b;
-  if (c === 0) b = day ? sun(32, 32, 12) : moon(32, 32, 14);
-  else if (c === 1 || c === 2) b = (day ? sun(22, 22, 9) : moon(22, 22, 10)) + cloud(4);
+  if (c === 0) b = day ? sunI(32, 32, 12) : moonI(32, 32, 14);
+  else if (c === 1 || c === 2) b = (day ? sunI(22, 22, 9) : moonI(22, 22, 10)) + cloud(4);
   else if (c === 3) b = cloud(-4);
   else if (c === 45 || c === 48)
-    b = '<g stroke="#B8C2CC" stroke-width="4" stroke-linecap="round"><line x1="12" y1="24" x2="52" y2="24"/><line x1="8" y1="33" x2="48" y2="33"/><line x1="16" y1="42" x2="56" y2="42"/><line x1="12" y1="51" x2="44" y2="51"/></g>';
+    b = '<g stroke="#D5DEE8" stroke-width="4" stroke-linecap="round"><line x1="12" y1="24" x2="52" y2="24"/><line x1="8" y1="33" x2="48" y2="33"/><line x1="16" y1="42" x2="56" y2="42"/><line x1="12" y1="51" x2="44" y2="51"/></g>';
   else if ((c >= 71 && c <= 77) || c === 85 || c === 86) b = cloud(-8) + flakes();
-  else if (c >= 95) b = cloud(-8, '#9AA6B4') + bolt();
+  else if (c === 96 || c === 99) b = cloud(-8, '#AEB9C6') + hail();
+  else if (c >= 95) b = cloud(-8, '#AEB9C6') + bolt();
   else if (c >= 51) b = cloud(-8) + drops();
   else b = cloud(-4);
-  return '<svg class="ic" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' + b + '</svg>';
+  return b;
 }
+function icon(c, day){ return '<svg class="ic" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">' + iconSvg(c, day) + '</svg>'; }
 
-
-// ===== TEMA + GIORNO/NOTTE =====
-var SUN = {}, lastMin = -1, T70 = false;
-try { T70 = localStorage.getItem('tema') === '70'; } catch (e) {}
-function loc(s){ var a = s.split('T'), d = a[0].split('-'), t = a[1].split(':');
-  return new Date(+d[0], +d[1] - 1, +d[2], +t[0], +t[1]); }
-function dur(ms){ var m = Math.max(0, Math.round(ms / 60000)), h = Math.floor(m / 60);
-  return (h ? h + 'h ' : '') + pad(m % 60) + 'm'; }
-function toggleTheme(){
-  T70 = !T70;
-  try { localStorage.setItem('tema', T70 ? '70' : 'mod'); } catch (e) {}
-  lastMin = -1; tick();
+// ===== DAYLIGHT: fase del giorno, sfondo, luminosità =====
+var SUN = {}, lastMin = -1, phase = '';
+function getPhase(now){
+  if (!SUN.rise){ var h = now.getHours(); return h >= 7 && h < 18 ? 'day' : 'night'; }
+  var t = now.getTime(), r = SUN.rise.getTime(), s = SUN.set.getTime(), M = 60000;
+  if (t >= r - 60 * M && t < r + 45 * M) return 'dawn';
+  if (t >= r + 45 * M && t < s - 75 * M) return 'day';
+  if (t >= s - 75 * M && t < s) return 'golden';
+  if (t >= s && t < s + 60 * M) return 'dusk';
+  return 'night';
 }
-function drawSun(){
-  var now = new Date(), isDay = true, f = 0.5, html, row;
-  if (SUN.rise){
-    isDay = now >= SUN.rise && now < SUN.set;
-    var a, b;
-    if (isDay){ a = SUN.rise; b = SUN.set; }
-    else if (now >= SUN.set){ a = SUN.set; b = SUN.rise2; }
-    else { a = SUN.set0; b = SUN.rise; }
-    f = Math.min(1, Math.max(0, (now - a) / (b - a)));
-    var x = 100 - 85 * Math.cos(Math.PI * f), y = 62 - 50 * Math.sin(Math.PI * f);
-    var arc = 'M15 62 A85 50 0 0 1 185 62';
-    var done = 'M15 62 A85 50 0 0 1 ' + x.toFixed(1) + ' ' + y.toFixed(1);
-    var body = isDay
-      ? '<circle cx="' + x + '" cy="' + y + '" r="11" fill="#FFC93C" opacity=".25"/><circle cx="' + x + '" cy="' + y + '" r="7" fill="#FFC93C"/>'
-      : '<path d="M' + (x + 2) + ' ' + (y - 7) + ' A7 7 0 1 0 ' + (x + 2) + ' ' + (y + 7) + ' A9 9 0 0 1 ' + (x + 2) + ' ' + (y - 7) + 'z" fill="#F4E7B0"/>';
-    html = '<svg viewBox="0 0 200 70" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' +
-      '<line class="hz" x1="4" y1="62" x2="196" y2="62" stroke-width="1.5"/>' +
-      '<path class="arcbase" d="' + arc + '" fill="none" stroke-width="2.5" stroke-dasharray="' + (isDay ? '0' : '3 5') + '"/>' +
-      (isDay && f > 0.005 ? '<path class="arcdone" d="' + done + '" fill="none" stroke-width="3.5" stroke-linecap="round"/>' : '') +
-      body + '</svg>';
-    row = isDay
-      ? '<span>Alba <b>' + hm2(SUN.rise) + '</b></span><span>Tramonto tra <b>' + dur(SUN.set - now) + '</b></span><span><b>' + hm2(SUN.set) + '</b></span>'
-      : '<span>Tramonto <b>' + hm2(a) + '</b></span><span>Alba tra <b>' + dur(b - now) + '</b></span><span><b>' + hm2(b) + '</b></span>';
-    $('sunSvg').innerHTML = html; $('sunRow').innerHTML = row;
-  } else {
-    var h = now.getHours(); isDay = h >= 7 && h < 18;
+function applyPhase(now){
+  var p = getPhase(now), h = now.getHours();
+  var deep = p === 'night' && (DEEP_NIGHT_FROM > DEEP_NIGHT_TO ? (h >= DEEP_NIGHT_FROM || h < DEEP_NIGHT_TO) : (h >= DEEP_NIGHT_FROM && h < DEEP_NIGHT_TO));
+  var key = deep ? 'deep' : p;
+  document.body.className = 'p-' + p + (SAFE_ZONES ? ' safe' : '');
+  $('shade').style.opacity = SHADE[key];
+  if (key !== phase){
+    phase = key;
+    try { if (window.fully && fully.setScreenBrightness) fully.setScreenBrightness(BRIGHT[key]); } catch (e) {}
   }
-  document.body.className = (isDay ? 'day' : 'night') + (T70 ? ' t70' : '');
-  $('tbtn').innerHTML = T70 ? 'Now' : '70s';
 }
-function hm2(d){ return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
 
-// ---- orologio + attenuazione notturna ----
+function drawSun(){
+  var now = new Date();
+  applyPhase(now);
+  if (!SUN.rise) return;
+  var isDay = now >= SUN.rise && now < SUN.set, a, b;
+  if (isDay){ a = SUN.rise; b = SUN.set; }
+  else if (now >= SUN.set){ a = SUN.set; b = SUN.rise2; }
+  else { a = SUN.set0; b = SUN.rise; }
+  var f = Math.min(1, Math.max(0, (now - a) / (b - a)));
+  var x = 100 - 85 * Math.cos(Math.PI * f), y = 62 - 50 * Math.sin(Math.PI * f);
+  var done = 'M15 62 A85 50 0 0 1 ' + x.toFixed(1) + ' ' + y.toFixed(1);
+  var body = isDay
+    ? '<circle cx="' + x + '" cy="' + y + '" r="12" fill="#FFC93C" opacity=".3"/><circle cx="' + x + '" cy="' + y + '" r="7" fill="#FFC93C"/>'
+    : '<path d="M' + (x + 2) + ' ' + (y - 7) + ' A7 7 0 1 0 ' + (x + 2) + ' ' + (y + 7) + ' A9 9 0 0 1 ' + (x + 2) + ' ' + (y - 7) + 'z" fill="#F4E7B0"/>';
+  $('sunSvg').innerHTML = '<svg viewBox="0 0 200 70" xmlns="http://www.w3.org/2000/svg">' +
+    '<line x1="4" y1="62" x2="196" y2="62" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>' +
+    '<path d="M15 62 A85 50 0 0 1 185 62" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2.5"' + (isDay ? '' : ' stroke-dasharray="3 5"') + '/>' +
+    (isDay && f > 0.005 ? '<path d="' + done + '" fill="none" stroke="#FFC93C" stroke-width="3.5" stroke-linecap="round"/>' : '') +
+    body + '</svg>';
+  $('sunRow').innerHTML = isDay
+    ? '<span>Alba <b>' + hm2(SUN.rise) + '</b></span><span>Tramonto tra <b>' + dur(SUN.set - now) + '</b></span><span><b>' + hm2(SUN.set) + '</b></span>'
+    : '<span>Tramonto <b>' + hm2(a) + '</b></span><span>Alba tra <b>' + dur(b - now) + '</b></span><span><b>' + hm2(b) + '</b></span>';
+}
+
 function tick(){
-  var n = new Date(), h = n.getHours();
-  $('clock').innerHTML = pad(h) + ':' + pad(n.getMinutes());
+  var n = new Date();
+  $('clock').innerHTML = pad(n.getHours()) + ':' + pad(n.getMinutes());
   $('date').innerHTML = GIORNI[n.getDay()] + ' ' + n.getDate() + ' ' + MESI[n.getMonth()];
-  var night = NIGHT_FROM > NIGHT_TO ? (h >= NIGHT_FROM || h < NIGHT_TO) : (h >= NIGHT_FROM && h < NIGHT_TO);
-  $('app').className = night ? 'dim' : '';
-  if (n.getMinutes() !== lastMin){ lastMin = n.getMinutes(); drawSun(); }
+  if (n.getMinutes() !== lastMin){ lastMin = n.getMinutes(); drawSun(); renderAlerts(); }
 }
 
-// ---- rendering dati ----
+// ===== METEO =====
+var wxAlerts = [];
+function chart(H, start){
+  var W = 600, Ht = 190, L = 14, R = 14, TOP = 46, BOT = 150, N = 25, i;
+  var end = Math.min(start + N, H.time.length), n = end - start;
+  if (n < 2) return '';
+  var tmin = 99, tmax = -99, imin = start, imax = start;
+  for (i = start; i < end; i++){
+    var t = H.temperature_2m[i];
+    if (t < tmin){ tmin = t; imin = i; }
+    if (t > tmax){ tmax = t; imax = i; }
+  }
+  var span = Math.max(tmax - tmin, 4), lo = tmin - span * 0.15, hi = tmax + span * 0.25;
+  var dx = (W - L - R) / (n - 1);
+  function X(i){ return L + (i - start) * dx; }
+  function Y(t){ return BOT - (t - lo) / (hi - lo) * (BOT - TOP - 20); }
+  var s = '<svg viewBox="0 0 ' + W + ' ' + Ht + '" xmlns="http://www.w3.org/2000/svg">';
+  // notte ombreggiata
+  for (i = start; i < end; i++) if (!H.is_day[i])
+    s += '<rect x="' + (X(i) - dx / 2) + '" y="0" width="' + (dx + 0.5) + '" height="' + (BOT + 4) + '" fill="rgba(0,0,20,.22)"/>';
+  // pioggia: barre mm (piena = 4 mm/h) con trasparenza = probabilità
+  for (i = start; i < end; i++){
+    var mm = H.precipitation[i] || 0, pp = H.precipitation_probability[i] || 0;
+    if (mm > 0.05 || pp >= 30){
+      var bh = Math.max(3, Math.min(mm / 4, 1) * 46);
+      s += '<rect x="' + (X(i) - dx * 0.35) + '" y="' + (BOT - bh) + '" width="' + (dx * 0.7) + '" height="' + bh +
+           '" rx="2" fill="#7CC4FF" opacity="' + (0.25 + pp / 140).toFixed(2) + '"/>';
+    }
+  }
+  // linea temperatura
+  var d = '', area = 'M' + X(start) + ' ' + BOT;
+  for (i = start; i < end; i++){ d += (i === start ? 'M' : 'L') + X(i).toFixed(1) + ' ' + Y(H.temperature_2m[i]).toFixed(1); area += 'L' + X(i).toFixed(1) + ' ' + Y(H.temperature_2m[i]).toFixed(1); }
+  area += 'L' + X(end - 1) + ' ' + BOT + 'z';
+  s += '<path d="' + area + '" fill="rgba(255,201,60,.12)"/>';
+  s += '<path d="' + d + '" fill="none" stroke="#FFD98A" stroke-width="2.5" stroke-linejoin="round"/>';
+  // etichette ogni 3 ore
+  for (i = start; i < end; i += 3){
+    var x = X(i), tt = Math.round(H.temperature_2m[i]);
+    s += '<g transform="translate(' + (x - 13) + ',0) scale(.42)">' + iconSvg(H.weather_code[i], H.is_day[i]) + '</g>';
+    if (i !== imin && i !== imax)
+      s += '<text x="' + x + '" y="' + (Y(H.temperature_2m[i]) - 8) + '" fill="#fff" font-size="15" text-anchor="middle">' + tt + '°</text>';
+    s += '<text x="' + x + '" y="' + (BOT + 22) + '" fill="rgba(255,255,255,.7)" font-size="14" text-anchor="middle">' + (i === start ? 'Ora' : hm(H.time[i]).substr(0, 2)) + '</text>';
+    var p = H.precipitation_probability[i];
+    if (p >= 20) s += '<text x="' + x + '" y="' + (BOT + 40) + '" fill="#BFE3FF" font-size="13" text-anchor="middle">' + p + '%</text>';
+  }
+  // min e max evidenziati
+  function mark(ix, col, lbl, up){
+    var x = X(ix), y = Y(H.temperature_2m[ix]);
+    var anchor = x < 60 ? 'start' : (x > W - 60 ? 'end' : 'middle');
+    return '<circle cx="' + x + '" cy="' + y + '" r="5" fill="' + col + '" stroke="#fff" stroke-width="1.5"/>' +
+      '<text x="' + x + '" y="' + (up ? y - 10 : y + 22) + '" fill="' + col + '" font-size="16" font-weight="bold" text-anchor="' + anchor + '">' +
+      lbl + ' ' + Math.round(H.temperature_2m[ix]) + '° · ' + hm(H.time[ix]) + '</text>';
+  }
+  s += mark(imax, '#FFC93C', 'max', true) + mark(imin, '#8FD3FF', 'min', imin === imax);
+  return s + '</svg>';
+}
+
+function buildWxAlerts(d, start){
+  var H = d.hourly, out = [], end = Math.min(start + 24, H.time.length), i;
+  var hailAt = -1, stormAt = -1, cape = 0, capeAt = -1, gust = 0, gustAt = -1, rain = 0, tmin = 99, tminAt = -1;
+  for (i = start; i < end; i++){
+    var c = H.weather_code[i], pp = H.precipitation_probability[i] || 0;
+    if ((c === 96 || c === 99) && hailAt < 0) hailAt = i;
+    if (c === 95 && stormAt < 0) stormAt = i;
+    if (H.cape[i] > cape && pp >= 30){ cape = H.cape[i]; capeAt = i; }
+    if (H.wind_gusts_10m[i] > gust){ gust = H.wind_gusts_10m[i]; gustAt = i; }
+    rain += H.precipitation[i] || 0;
+    if (H.temperature_2m[i] < tmin){ tmin = H.temperature_2m[i]; tminAt = i; }
+  }
+  function when(ix){ var t = loc(H.time[ix]), n = new Date();
+    return (t.getDate() === n.getDate() ? '' : 'domani ') + 'ore ' + hm(H.time[ix]); }
+  if (hailAt >= 0) out.push({lv: 'o', t: 'GRANDINE', x: 'temporale con grandine possibile, ' + when(hailAt)});
+  else if (cape >= 1500 && capeAt >= 0) out.push({lv: 'o', t: 'GRANDINE?', x: 'forte instabilità (CAPE ' + Math.round(cape) + '), rischio grandine ' + when(capeAt)});
+  else if (stormAt >= 0) out.push({lv: 'y', t: 'TEMPORALE', x: when(stormAt)});
+  if (gust >= 60) out.push({lv: gust >= 80 ? 'o' : 'y', t: 'VENTO', x: 'raffiche fino a ' + Math.round(gust) + ' km/h, ' + when(gustAt)});
+  if (rain >= 30) out.push({lv: rain >= 60 ? 'o' : 'y', t: 'PIOGGIA', x: Math.round(rain) + ' mm nelle prossime 24 ore'});
+  if (tmin <= 2) out.push({lv: 'y', t: 'GELO', x: 'minima ' + Math.round(tmin) + '° ' + when(tminAt) + ' · strade scivolose'});
+  return out;
+}
+
 function render(d){
   var c = d.current, i, k, html;
   $('nowIc').innerHTML = icon(c.weather_code, c.is_day);
@@ -300,26 +326,16 @@ function render(d){
   $('desc').innerHTML = CITY + ' · ' + desc(c.weather_code);
   $('meta').innerHTML =
     'Percepita <b>' + Math.round(c.apparent_temperature) + '°</b> · Umidità <b>' + c.relative_humidity_2m + '%</b><br>' +
-    'Vento <b>' + Math.round(c.wind_speed_10m) + ' km/h ' + card(c.wind_direction_10m) + '</b>';
+    'Vento <b>' + Math.round(c.wind_speed_10m) + ' km/h ' + card(c.wind_direction_10m) + '</b> · raffiche <b>' + Math.round(c.wind_gusts_10m) + '</b>';
   SUN.rise = loc(d.daily.sunrise[0]); SUN.set = loc(d.daily.sunset[0]);
   SUN.rise2 = loc(d.daily.sunrise[1]); SUN.set0 = new Date(SUN.set.getTime() - 86400000);
-  lastMin = -1; tick();
 
-  // prossime 8 ore
   var H = d.hourly, key = c.time.substr(0, 13), start = 0;
   for (i = 0; i < H.time.length; i++){ if (H.time[i].substr(0, 13) >= key){ start = i; break; } }
-  html = '';
-  for (i = start; i < start + 8 && i < H.time.length; i++){
-    var p = H.precipitation_probability[i];
-    html += '<div class="h"><div class="t">' + (i === start ? 'Ora' : hm(H.time[i])) + '</div>' +
-      icon(H.weather_code[i], H.is_day[i]) +
-      '<div class="v">' + Math.round(H.temperature_2m[i]) + '°</div>' +
-      '<div class="p">' + (p >= 10 ? p + '%' : '') + '</div></div>';
-  }
-  $('hours').innerHTML = html;
+  $('chart').innerHTML = chart(H, start);
+  wxAlerts = buildWxAlerts(d, start);
 
-  // 5 giorni con barra min/max
-  var D = d.daily, gmin = 99, gmax = -99, N = Math.min(4, D.time.length);
+  var D = d.daily, gmin = 99, gmax = -99, N = Math.min(5, D.time.length);
   for (k = 0; k < N; k++){
     if (D.temperature_2m_min[k] < gmin) gmin = D.temperature_2m_min[k];
     if (D.temperature_2m_max[k] > gmax) gmax = D.temperature_2m_max[k];
@@ -327,86 +343,69 @@ function render(d){
   var range = (gmax - gmin) || 1;
   html = '';
   for (k = 0; k < N; k++){
-    var s = D.time[k].split('-'), dt = new Date(+s[0], +s[1] - 1, +s[2]);
-    var mn = D.temperature_2m_min[k], mx = D.temperature_2m_max[k], pp = D.precipitation_probability_max[k];
+    var dt = loc(D.time[k]), mn = D.temperature_2m_min[k], mx = D.temperature_2m_max[k];
+    var pp = D.precipitation_probability_max[k], ps = D.precipitation_sum[k], gu = D.wind_gusts_10m_max[k];
     var left = (mn - gmin) / range * 100, w = Math.max((mx - mn) / range * 100, 3);
-    html += '<div class="d"><div class="n">' + (k === 0 ? 'Oggi' : GG[dt.getDay()]) + '</div>' +
-      icon(D.weather_code[k], 1) +
-      '<div class="p">' + (pp >= 10 ? pp + '%' : '') + '</div>' +
+    html += '<div class="d"><div class="n">' + (k === 0 ? 'Oggi' : GG[dt.getDay()]) + '</div>' + icon(D.weather_code[k], 1) +
+      '<div class="p">' + (pp >= 10 ? pp + '%' + (ps >= 0.5 ? ' · ' + (ps < 10 ? ps.toFixed(1) : Math.round(ps)) + 'mm' : '') : '') + '</div>' +
       '<div class="mn">' + Math.round(mn) + '°</div>' +
       '<div class="bar"><i style="left:' + left + '%;width:' + w + '%"></i></div>' +
-      '<div class="mx">' + Math.round(mx) + '°</div></div>';
+      '<div class="mx">' + Math.round(mx) + '°</div>' +
+      '<div class="g">' + (gu >= 40 ? '≈' + Math.round(gu) : '') + '</div></div>';
   }
   $('days').innerHTML = html;
-
   var n = new Date();
   $('foot').className = 'foot';
-  $('foot').innerHTML = 'Aggiornato alle ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + ' · Open-Meteo';
+  $('foot').innerHTML = 'Aggiornato alle ' + hm2(n) + ' · Open-Meteo';
+  lastMin = -1; tick();
 }
 
-function fail(){
-  $('foot').className = 'foot err';
-  $('foot').innerHTML = 'Aggiornamento non riuscito, riprovo tra poco';
-}
-
+function fail(){ $('foot').className = 'foot err'; $('foot').innerHTML = 'Aggiornamento meteo non riuscito, riprovo tra poco'; }
 function load(i){
   if (i >= HOSTS.length){ fail(); return; }
   var x = new XMLHttpRequest();
   x.open('GET', HOSTS[i] + Q, true);
   x.timeout = 20000;
   x.onload = function(){
-    if (x.status === 200){
-      try { render(JSON.parse(x.responseText)); hostIdx = i; } catch (e) { fail(); }
-    } else load(i + 1);
+    if (x.status === 200){ try { render(JSON.parse(x.responseText)); hostIdx = i; } catch (e) { fail(); } }
+    else load(i + 1);
   };
   x.onerror = x.ontimeout = function(){ load(i + 1); };
   x.send();
 }
 
-tick();
-setInterval(tick, 1000);
-load(hostIdx);
-setInterval(function(){ load(hostIdx); }, REFRESH_MIN * 60000);
-
-// ===== SPORT =====
+// ===== FOGLIO: sport + allerte ufficiali =====
 var sheetRows = [], f1Live = null;
-
-function parseCell(c){
+function cellStr(c){
   if (!c || c.v === null || c.v === undefined) return '';
-  var v = c.v;
-  if (typeof v === 'string' && v.indexOf('Date(') === 0){
-    var a = v.substring(5, v.length - 1).split(',');
+  if (typeof c.v === 'string' && c.v.indexOf('Date(') === 0){
+    if (c.f) return String(c.f);
+    var a = c.v.substring(5, c.v.length - 1).split(',');
+    if (+a[0] < 1900) return pad(+a[3]) + ':' + pad(+a[4]);
     return a[0] + '-' + pad(+a[1] + 1) + '-' + pad(+a[2]);
   }
-  if (v instanceof Array) return pad(v[0]) + ':' + pad(v[1]);       // timeofday
-  if (typeof v === 'number' && v < 1) {                            // frazione di giorno
-    var m = Math.round(v * 1440); return pad(Math.floor(m / 60)) + ':' + pad(m % 60);
-  }
-  return String(c.f && typeof v !== 'string' ? c.f : v);
+  if (c.v instanceof Array) return pad(c.v[0]) + ':' + pad(c.v[1]);
+  if (typeof c.v === 'number' && c.v < 1){ var m = Math.round(c.v * 1440); return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+  return String(c.v);
 }
-
 window.sportCb = function(resp){
   try {
     var rows = resp.table.rows, out = [];
     for (var i = 0; i < rows.length; i++){
-      var c = rows[i].c, g = parseCell(c[0]);
+      var c = rows[i].c, g = cellStr(c[0]);
       if (!g || g === 'gruppo') continue;
-      out.push({g: g, t: parseCell(c[1]), d: parseCell(c[2]), h: parseCell(c[3]), x: parseCell(c[4]), ch: parseCell(c[5])});
+      out.push({g: g, t: cellStr(c[1]), d: cellStr(c[2]), h: cellStr(c[3]), x: cellStr(c[4]), ch: cellStr(c[5])});
     }
-    sheetRows = out; renderSport();
+    sheetRows = out; renderSport(); renderAlerts();
   } catch (e) {}
 };
-
 function loadSheet(){
   var old = $('sheetJs'); if (old) old.parentNode.removeChild(old);
   var sc = document.createElement('script');
   sc.id = 'sheetJs';
-  sc.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-           '/gviz/tq?sheet=Sport&headers=1&tqx=out:json;responseHandler:sportCb&_=' + new Date().getTime();
+  sc.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=Sport&headers=1&tqx=out:json;responseHandler:sportCb&_=' + new Date().getTime();
   document.body.appendChild(sc);
 }
-
-// F1 live da Jolpica (orari UTC -> ora locale del tablet)
 function loadF1(){
   var x = new XMLHttpRequest();
   x.open('GET', 'https://api.jolpi.ca/ergast/f1/current/next.json', true);
@@ -417,7 +416,7 @@ function loadF1(){
       function add(lbl, o){ if (o && o.date) list.push({lbl: lbl, dt: new Date(o.date + 'T' + (o.time || '00:00:00Z'))}); }
       add('Q.Sprint', r.SprintQualifying || r.SprintShootout);
       add('Sprint', r.Sprint);
-      add('Qual.', r.Qualifying);
+      add('Qualifiche', r.Qualifying);
       add('Gara', {date: r.date, time: r.time});
       f1Live = {name: r.raceName.replace(' Grand Prix', ''), s: list};
       renderSport();
@@ -425,69 +424,73 @@ function loadF1(){
   };
   x.send();
 }
-
 function rowDate(r){
-  if (!r.d) return null;
-  var a = r.d.split('-'), t = (r.h || '00:00').split(':');
+  if (!r.d || !/^\d{4}-\d{2}-\d{2}/.test(r.d)) return null;
+  var a = r.d.substr(0, 10).split('-'), t = /^\d{1,2}:\d{2}/.test(r.h) ? r.h.split(':') : ['0', '0'];
   return new Date(+a[0], +a[1] - 1, +a[2], +t[0], +t[1]);
 }
 function when(dt){
   var n = new Date(), today = new Date(n.getFullYear(), n.getMonth(), n.getDate());
   var dd = Math.round((new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()) - today) / 86400000);
   var g = dd === 0 ? 'Oggi' : dd === 1 ? 'Domani' : dd < 7 ? GG[dt.getDay()] : GG[dt.getDay()] + ' ' + dt.getDate() + '/' + (dt.getMonth() + 1);
-  return g + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+  return g + ' ' + hm2(dt);
 }
-function shortWhen(dt){ return GG[dt.getDay()] + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes()); }
 function line(cls, tag, what, q, ch){
-  return '<div class="s"><span class="k ' + cls + '">' + tag + '</span><span class="w">' + what + '</span>' +
-    (q ? '<span class="q">' + q + '</span>' : '') + (ch ? '<span class="c">' + ch + '</span>' : '') + '</div>';
+  return '<div class="s"><div class="s1"><span class="k ' + cls + '">' + tag + '</span><span class="w">' + what + '</span></div>' +
+    '<div class="s2"><span class="q">' + q + '</span>' + (ch ? '<span class="c"> · ' + ch + '</span>' : '') + '</div></div>';
 }
-// prossima riga futura del gruppo (tolleranza: resta visibile fino a 2 ore dopo l'inizio)
-function nextOf(g){
-  var now = new Date().getTime() - 2 * 3600000, best = null, undated = null;
-  for (var i = 0; i < sheetRows.length; i++){
-    var r = sheetRows[i]; if (r.g !== g) continue;
-    var dt = rowDate(r);
-    if (!dt){ undated = undated || r; continue; }
-    if (dt.getTime() >= now && (!best || dt < best.dt)) best = {r: r, dt: dt};
-  }
-  return best || (undated ? {r: undated, dt: null} : null);
-}
-
+// i 2 eventi sportivi più vicini (restano visibili fino a 2 ore dopo l'inizio)
 function renderSport(){
-  var html = '', now = new Date().getTime() - 2 * 3600000, i;
-  // F1: live se disponibile, altrimenti dal foglio
-  var f1ch = '';
-  for (i = 0; i < sheetRows.length; i++) if (sheetRows[i].g === 'F1' && sheetRows[i].ch){ f1ch = sheetRows[i].ch; break; }
-  var parts = [], gp = '';
+  var now = new Date().getTime() - 2 * 3600000, ev = [], i, best = {};
+  var TAG = {F1: ['f1', 'F1'], MILAN: ['mi', 'MIL'], ITALIA: ['it', 'ITA'], U21: ['u21', 'U21']};
+  var gpName = '', f1ch = '';
+  for (i = 0; i < sheetRows.length; i++) if (sheetRows[i].g === 'F1'){ gpName = gpName || sheetRows[i].t.split(' · ')[0]; f1ch = f1ch || sheetRows[i].ch; }
   if (f1Live){
-    gp = 'GP ' + f1Live.name;
-    for (var j = 0; j < sheetRows.length; j++) if (sheetRows[j].g === 'F1'){ gp = sheetRows[j].t.split(' · ')[0]; break; }
-    for (i = 0; i < f1Live.s.length; i++) if (f1Live.s[i].dt.getTime() >= now) parts.push(f1Live.s[i].lbl + ' ' + (parts.length ? shortWhen(f1Live.s[i].dt) : when(f1Live.s[i].dt)));
-  } else {
-    for (i = 0; i < sheetRows.length; i++){
-      var r = sheetRows[i], dt = rowDate(r);
-      if (r.g !== 'F1' || !dt || dt.getTime() < now) continue;
-      var tt = r.t.split(' · '); gp = gp || tt[0];
-      var lb = (tt[1] || r.t).replace('Qualifiche sprint', 'Q.Sprint').replace('Qualifiche', 'Qual.');
-      parts.push(lb + ' ' + (parts.length ? shortWhen(dt) : when(dt)));
+    for (i = 0; i < f1Live.s.length; i++) if (f1Live.s[i].dt.getTime() >= now){
+      ev.push({g: 'F1', dt: f1Live.s[i].dt, t: (gpName || 'GP ' + f1Live.name) + ' · ' + f1Live.s[i].lbl, ch: f1ch}); break;
     }
   }
-  if (parts.length) html += line('f1', 'F1', gp, parts.slice(0, 2).join(' · '), f1ch);
-
-  var G = [['MILAN', 'mi', 'MIL'], ['ITALIA', 'it', 'ITA'], ['U21', 'u21', 'U21']];
-  for (i = 0; i < G.length; i++){
-    var n = nextOf(G[i][0]); if (!n) continue;
-    html += line(G[i][1], G[i][2], n.r.t, n.dt ? when(n.dt) : n.r.x, n.dt ? (n.r.ch || n.r.x) : '');
+  for (i = 0; i < sheetRows.length; i++){
+    var r = sheetRows[i], dt = rowDate(r);
+    if (!TAG[r.g] || !dt || dt.getTime() < now) continue;
+    if (r.g === 'F1' && f1Live) continue;
+    if (!best[r.g] || dt < best[r.g].dt) best[r.g] = {g: r.g, dt: dt, t: r.t, ch: r.ch};
+  }
+  for (var g in best) if (best.hasOwnProperty(g)) ev.push(best[g]);
+  ev.sort(function(a, b){ return a.dt - b.dt; });
+  var html = '';
+  for (i = 0; i < ev.length && i < 2; i++){
+    var tg = TAG[ev[i].g];
+    html += line(tg[0], tg[1], ev[i].t, when(ev[i].dt), ev[i].ch);
   }
   $('sport').innerHTML = html;
 }
+function renderAlerts(){
+  var out = [], i, today = new Date(); today.setHours(0, 0, 0, 0);
+  var LV = {gialla: 'y', arancione: 'o', rossa: 'r'};
+  for (i = 0; i < sheetRows.length; i++){
+    var r = sheetRows[i];
+    if (r.g !== 'ALLERTA') continue;
+    var lv = LV[(r.ch || '').toLowerCase()];
+    var dt = rowDate(r);
+    if (!lv || (dt && dt < today)) continue;
+    out.push({lv: lv, t: 'ALLERTA ' + r.ch.toUpperCase(), x: r.t + (r.x ? ' · ' + r.x : '') + (dt ? ' · ' + when(dt).replace(/ \d\d:\d\d$/, '') : '')});
+  }
+  out = out.concat(wxAlerts);
+  var html = '';
+  for (i = 0; i < out.length && i < 2; i++) html += '<div class="al ' + out[i].lv + '"><i>' + out[i].t + '</i>' + out[i].x + '</div>';
+  $('alerts').innerHTML = html;
+}
 
+if (SAFE_ZONES) document.body.className += ' safe';
+tick();
+setInterval(tick, 1000);
+load(hostIdx);
+setInterval(function(){ load(hostIdx); }, REFRESH_MIN * 60000);
 loadSheet(); loadF1();
 setInterval(function(){ loadSheet(); loadF1(); }, SPORT_REFRESH_MIN * 60000);
 setInterval(renderSport, 60000);
-
-// ricarica completa ogni 6 ore per liberare memoria
+// ricarica completa ogni 6 ore (libera memoria e prende la nuova versione da GitHub)
 setTimeout(function(){ location.reload(); }, 6 * 3600000);
 </script>
 </body>
