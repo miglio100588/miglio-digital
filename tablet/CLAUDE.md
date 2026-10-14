@@ -1,7 +1,23 @@
-# Tablet meteo — pannello a muro (Galaxy Tab 2 + iPad 2)
+# tablet-meteo
 
-Pannello meteo/radar/agenda/sport per casa di Alberto (Via Peschiera 20, Boara Polesine, Rovigo).
-Vive nella cartella `tablet/` del repo `miglio100588/miglio-digital`, pubblicato con GitHub Pages.
+Cos'è: pannello a muro meteo + radar + agenda + sport per casa di Alberto (Via Peschiera 20, Boara Polesine, Rovigo), su Galaxy Tab 2 e iPad 2.
+
+## Dove stanno le cose
+- Codice: oggi `miglio-digital/tablet/` (GitHub `miglio100588/miglio-digital`, GitHub Pages). **Da migrare** in `~/progetti/tablet-meteo/` → GitHub `miglio100588/tablet-meteo` + Cloudflare Pages: vedi `docs/PIANO-migrazione-repo.md`.
+- Documenti (foto del tablet, screenshot di riferimento): Google Drive `Claude/tablet-meteo/` (su Linux `~/GoogleDrive/Claude/tablet-meteo/`).
+- Segreti: nessuno nel codice. Le API usate sono pubbliche e senza chiave.
+
+## Regole (dal template di `~/progetti`)
+- Mai committare `.env`, chiavi o password.
+- Niente file pesanti in git (immagini di riferimento, video, zip): vanno su Drive.
+- A fine sessione: commit con messaggio chiaro e `git push`.
+- Il sito si pubblica da `main`: lavora su un branch e fai merge su `main` solo quando Alberto conferma (eccezione: piccoli fix già verificati con gli screenshot, se Alberto ha chiesto di pubblicare).
+- Mai deploy, modifiche DNS o pannelli di hosting senza chiedere.
+
+## Comandi
+- Verifica sintassi: `node --check app.js`
+- Mockup/screenshot: `NODE_PATH=$(npm root -g) node tools/mock-render.js --overlay` (scenario pulito: `--dry`); i PNG finiscono in `tools/out/`
+- In locale: `python3 -m http.server 8080` dentro la cartella del sito, poi `http://localhost:8080/` e `/ipad.html`
 
 ## URL
 | Dispositivo | URL | Viewport |
@@ -33,7 +49,9 @@ Sotto ci vanno contenuti grafici che restano leggibili (radar, grafico). Foto di
 | Blocco | Fonte | Refresh |
 |---|---|---|
 | Meteo, grafico 24h, giorni, avvisi calcolati | Open-Meteo (gratis, senza chiave) | 15 min |
-| Radar | RainViewer `weather-maps.json` (gratis: zoom max 7, schema colore 2, ultime 2 ore a 10 min) + mappa Esri World Dark Gray | 10 min |
+| Radar | RainViewer `weather-maps.json` (gratis: zoom max 7, schema colore 2), solo l'ultimo fotogramma, fermo + mappa Esri World Dark Gray | 15 min |
+| Nowcast pioggia 3h, pressione, UV | Open-Meteo (`minutely_15`, `pressure_msl`, `uv_index_max`) | 15 min |
+| Aria e pollini | Open-Meteo Air Quality (fallback: tessera UV) | 60 min |
 | F1 | Jolpica `api.jolpi.ca/ergast/f1/current/next.json` | 30 min |
 | Sport, allerte ufficiali | Foglio Google `1Vyjea-9AzZGETDihlg3CWY4TMPLNdmLtUFvVvVxDaUc`, scheda `Sport` (JSONP gviz) | 30 min |
 | Agenda | Stesso foglio, scheda `Agenda` (JSONP gviz) | 30 min |
@@ -57,5 +75,7 @@ gviz restituisce la data come `Date(2026,9,15)` e l'ora come `Date(1899,11,30,18
 ## Preferenze di Alberto
 - Si regola su minime/massime (moto) e minime notturne (riscaldamento): min/max sempre ben visibili.
 - Tema "daylight" che segue alba e tramonto; niente tema anni '70.
-- Sport: solo i 2 eventi più vicini. Allerte e grandine in evidenza.
+- Un solo box OGGI+SPORT: max 3 eventi di oggi + i 2 eventi sportivi più vicini. Allerte e grandine in evidenza, in testa al box.
+- Tessere meteorologo: PIOGGIA 3H, MOTO (OTTIMA/DISCRETA/NO), PRESSIONE, ARIA/UV.
+- Radar statico (niente animazione), il più grande possibile. Effetto WOW ma leggibile a 2 metri.
 - Testi in italiano, stile asciutto.
