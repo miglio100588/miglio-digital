@@ -25,6 +25,10 @@ Cos'è: pannello a muro meteo + radar + agenda + sport per casa di Alberto (Via 
 | Galaxy Tab 2 (Android 6.0.1, LineageOS, Fully Kiosk senza licenza) | https://miglio100588.github.io/miglio-digital/tablet/ | 1024×600 landscape |
 | iPad 2 (iOS 9.3.5, Safari, "Aggiungi a Home" + Accesso Guidato) | https://miglio100588.github.io/miglio-digital/tablet/ipad.html | 1024×768 landscape |
 
+## Prossimi passi (venerdì 16/10, in Claude Code)
+1. Migrazione: `docs/PIANO-migrazione-repo.md`.
+2. Fix iPad (meteo e radar non caricano su iOS 9), canale TV, giro di frontend design: `docs/PIANO-v6.md`.
+
 ## Flusso di lavoro (obbligatorio)
 1. **Pianifica con Opus**: ogni modifica parte da un piano scritto in `docs/PIANO-*.md` (obiettivo, file toccati, specifiche di layout, criteri di accettazione, test).
 2. **Esegui con un subagente Sonnet**: il piano viene passato a un subagente con `model: sonnet`, che implementa e prova.
@@ -35,7 +39,7 @@ Cos'è: pannello a muro meteo + radar + agenda + sport per casa di Alberto (Via 
 - **Solo JavaScript ES5**: niente `let`/`const`, arrow function, template literal, `fetch`, Promise, classi, spread, `Array.from`, `Object.assign`. WebView di Android 6 e Safari 9.
 - Niente librerie esterne né build: HTML + CSS + JS statici. Logica condivisa in `app.js`; i layout sono `index.html` (Galaxy) e `ipad.html` (iPad).
 - Cache: ogni modifica a `app.js` aumenta il parametro `?v=N` nei tag `<script>` di entrambe le pagine.
-- Certificati: i dispositivi hanno trust store vecchi. Fully ha "Ignore SSL errors" attivo; Safari no. Prevedi fallback (http per Open-Meteo, messaggio "non disponibile" per radar e foglio).
+- Certificati: i dispositivi hanno trust store vecchi. Fully ha "Ignore SSL errors" attivo; Safari/Chrome su iOS 9 no. **Sull'iPad al 14/10 meteo e radar non caricano** (il foglio Google sì): soluzione prevista con proxy sullo stesso dominio (Cloudflare Pages Functions), vedi `docs/PIANO-v6.md` sezione A.
 - Unità in `vh`/`vw`; testare sempre 1024×600 e 1024×768.
 
 ## Overlay di Fully (Galaxy, senza licenza)
@@ -78,6 +82,8 @@ gviz restituisce la data come `Date(2026,9,15)` e l'ora come `Date(1899,11,30,18
 - Un solo box OGGI+SPORT: max 3 eventi di oggi + i 2 eventi sportivi più vicini. Allerte e grandine in evidenza, in testa al box. Il box è alto quanto serve (niente vuoto sotto); con gli avvisi si riduce a gradini (titoli, righe agenda, seconda riga sport).
 - Tessere meteorologo: Galaxy 3 (MOTO, PIOGGIA 3H, ARIA/PRESSIONE che alternano ogni 10 s); iPad 4 (MOTO, PIOGGIA 3H, PRESSIONE, ARIA). Note di una riga, scritte corte, mai tagliate.
 - Radar statico (niente animazione), il più grande possibile. Effetto WOW ma leggibile a 2 metri.
+- **Canale TV sempre visibile** per ogni evento sportivo, su entrambi i dispositivi: nessun compromesso. Si guadagna spazio con il layout, non togliendo il canale.
+- Vuole un layout accattivante: giro di frontend design previsto (vedi `docs/PIANO-v6.md`).
 - Testi in italiano, stile asciutto.
 
 ## Regole di leggibilità (v5, WCAG 2.2; leggono anche i genitori di Alberto)

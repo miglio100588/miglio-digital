@@ -23,6 +23,9 @@ Spostare il progetto da `miglio-digital/tablet/` a un repo suo, `tablet-meteo`, 
 9. **Pulizia**: aggiorna il `CLAUDE.md` di miglio-digital (se esiste) o il README per dire che il tablet è migrato. Aggiungi `tablet-meteo` a `Google Drive/Claude/Organizzazione progetti/PROGETTI.md`.
 10. **Comunica ad Alberto**: nuovo URL per Fully (facoltativo, il redirect funziona) e per l'iPad.
 
+## Dopo la migrazione
+Prosegui con `PIANO-v6.md`: le Pages Functions di questo repo servono come proxy per l'iPad.
+
 ## Attenzione
 - Android 6 e Cloudflare: il certificato potrebbe non essere riconosciuto. Fully ha "Ignore SSL Errors" attivo, mentre l'iPad no: prova l'URL su iPad prima di togliere il vecchio.
 - I due scheduled task di Claude scrivono sul foglio Google e non dipendono dal repo: nessuna modifica.
