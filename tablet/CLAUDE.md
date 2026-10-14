@@ -41,7 +41,7 @@ Cos'è: pannello a muro meteo + radar + agenda + sport per casa di Alberto (Via 
 ## Overlay di Fully (Galaxy, senza licenza)
 Fully disegna due scritte rosa semitrasparenti sopra la pagina, che dall'HTML non si possono togliere:
 - "PLUS Features Activated": in alto a destra (circa x 45–98%, y 5–12%).
-- "Please Get a License": in basso a sinistra (circa x 2–45%, y 88–97%).
+- "Please Get a License": in basso a sinistra (circa x 2–40%, y 88–97%; misurata sulla foto del 14/10, il mock usa font 6,2vh).
 Sotto ci vanno contenuti grafici che restano leggibili (radar, grafico). Foto di riferimento: `docs/foto-galaxy-2026-10-14.jpg`.
 `tools/mock-render.js --overlay` simula le scritte per verificarlo.
 
@@ -75,7 +75,13 @@ gviz restituisce la data come `Date(2026,9,15)` e l'ora come `Date(1899,11,30,18
 ## Preferenze di Alberto
 - Si regola su minime/massime (moto) e minime notturne (riscaldamento): min/max sempre ben visibili.
 - Tema "daylight" che segue alba e tramonto; niente tema anni '70.
-- Un solo box OGGI+SPORT: max 3 eventi di oggi + i 2 eventi sportivi più vicini. Allerte e grandine in evidenza, in testa al box.
-- Tessere meteorologo: PIOGGIA 3H, MOTO (OTTIMA/DISCRETA/NO), PRESSIONE, ARIA/UV.
+- Un solo box OGGI+SPORT: max 3 eventi di oggi + i 2 eventi sportivi più vicini. Allerte e grandine in evidenza, in testa al box. Il box è alto quanto serve (niente vuoto sotto); con gli avvisi si riduce a gradini (titoli, righe agenda, seconda riga sport).
+- Tessere meteorologo: Galaxy 3 (MOTO, PIOGGIA 3H, ARIA/PRESSIONE che alternano ogni 10 s); iPad 4 (MOTO, PIOGGIA 3H, PRESSIONE, ARIA). Note di una riga, scritte corte, mai tagliate.
 - Radar statico (niente animazione), il più grande possibile. Effetto WOW ma leggibile a 2 metri.
 - Testi in italiano, stile asciutto.
+
+## Regole di leggibilità (v5, WCAG 2.2; leggono anche i genitori di Alberto)
+- Dimensioni minime: Galaxy 3,7vh (22 px) per ogni testo, iPad 3,3vh (25 px). Eccezione unica: il credito "RainViewer · Esri…". Testo corrente 4–4,2vh (Galaxy) / 3,4–3,8vh (iPad), valori tessere 6–6,5vh, temperatura 12vh, orologio 15vh (Galaxy) / 16vh (iPad), peso mai sotto 400 (orologio) e 500 (resto).
+- Contrasto: almeno 4,5:1 per il testo sotto 24 px, 3:1 per testo grande (≥24 px bold o ≥32 px). Tutto il testo sta in card scure (rgba(6,14,32,.62) di giorno, rgba(0,0,0,.45) di notte); testo secondario al massimo rgba(255,255,255,.86); accenti #FFD98A giallo, #9BD3FF azzurro, #8BE59E verde, #FF8A80 rosso (solo testo grande), #FFB066 arancio.
+- Niente maiuscoletto sottile; meno cose ma grandi: se un'informazione non si legge da 1 m si toglie o si ingrandisce.
+- `node tools/mock-render.js --overlay --half`: controlli automatici (font minimo, contrasto WCAG campionato da screenshot a testo trasparente, spazio sprecato > 25%, overflow, etichette del grafico sovrapposte, orario sport nascosto, tessere) e copie `-half.png` al 50% per simulare la distanza. Devono essere tutti puliti prima di ogni commit.

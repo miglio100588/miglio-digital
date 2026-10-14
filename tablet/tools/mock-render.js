@@ -1,6 +1,7 @@
 // Rende index.html (1024x600) e ipad.html (1024x768) con dati finti e salva gli screenshot.
 // Uso:  NODE_PATH=$(npm root -g) node tools/mock-render.js [--overlay] [--out tools/out]
 // --dry: renderizza solo galaxy-dry e ipad-dry.
+// --half: salva anche <nome>-half.png, copia scalata al 50% (simula la distanza di lettura).
 // --overlay: simula le scritte rosa di Fully senza licenza (solo Galaxy).
 // Genera 6 immagini: galaxy/ipad x day/night (con pioggia, avvisi, agenda) + galaxy-dry/ipad-dry (giornata asciutta, niente avvisi).
 var fs = require('fs');
@@ -10,6 +11,7 @@ var pw = require('playwright');
 
 var args = process.argv.slice(2);
 var OVERLAY = args.indexOf('--overlay') >= 0;
+var HALF = args.indexOf('--half') >= 0;
 var ONLY_DRY = args.indexOf('--dry') >= 0;   // solo gli scenari puliti (asciutto, senza avvisi)
 var oi = args.indexOf('--out');
 var OUT = path.resolve(oi >= 0 ? args[oi + 1] : path.join(__dirname, 'out'));
@@ -177,14 +179,17 @@ async function setupRoutes(page){
   });
 }
 
-function check(){
+// ---------- controlli eseguiti nella pagina ----------
+// opts: {tiles, minPx (testo HTML), minSvg (altezza testo SVG del grafico)}
+function check(opts){
   var problems = [], warns = [];
   function nm(e){ return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : ''); }
   var de = document.documentElement, W = window.innerWidth, H = window.innerHeight;
   if (de.scrollWidth > de.clientWidth + 1) problems.push('overflow orizzontale documento ' + de.scrollWidth + ' > ' + de.clientWidth);
   if (de.scrollHeight > de.clientHeight + 1) problems.push('overflow verticale documento ' + de.scrollHeight + ' > ' + de.clientHeight);
-  var boxes = document.querySelectorAll('#app, .left, .right, .top, .bot, .bottom, .rcol, .card, .tile, .box, .tiles, .cols, .colA, .colB, .sm');
-  for (var i = 0; i < boxes.length; i++){
+  var boxes = document.querySelectorAll('#app, .main, .left, .right, .top, .bot, .rcol, .card, .tile, .box, .tiles, .cols, .colA, .colB');
+  var i;
+  for (i = 0; i < boxes.length; i++){
     var b = boxes[i];
     if (b.scrollHeight > b.clientHeight + 1) problems.push(nm(b) + ' scrollHeight ' + b.scrollHeight + ' > clientHeight ' + b.clientHeight);
     if (b.scrollWidth > b.clientWidth + 1) problems.push(nm(b) + ' scrollWidth ' + b.scrollWidth + ' > clientWidth ' + b.clientWidth);
@@ -193,22 +198,30 @@ function check(){
   var all = document.body.querySelectorAll('*');
   for (i = 0; i < all.length; i++){
     var e = all[i];
-    if (e.id === 'shade' || e.tagName === 'SCRIPT' || e.closest('.radar') || e.closest('.s2') || e.closest('svg') || e.closest('#fully-overlay')) continue;
+    if (e.id === 'shade' || e.tagName === 'SCRIPT' || e.closest('.radar') || e.closest('svg') || e.closest('#fully-overlay')) continue;
     var r = e.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
     if (r.bottom > H + 1 || r.right > W + 1 || r.left < -1 || r.top < -1) problems.push(nm(e) + ' fuori schermo (' + Math.round(r.left) + ',' + Math.round(r.top) + ',' + Math.round(r.right) + ',' + Math.round(r.bottom) + ')');
   }
-  // testo tagliato (nowrap + overflow hidden)
-  var tr = document.querySelectorAll('.al, .ag .at, .ag .aw, .s1, .s1 .w, .s2, .meta, .sunrow, .date, .desc, .dc .t, .dc .n, .dc .p, .dr span, .foot, .temp, .tl, .tv, .tn, .rl, .rleg');
+  // testo tagliato (nowrap + overflow hidden); le ellissi di agenda e avvisi sono volute
+  var tr = document.querySelectorAll('.ag .aw, .s1, .s1 .w, .s2, .meta, .feel, .sunrow, .date, .desc, .dc .t, .dc .n, .dc .p, .dr span, .stale, .temp, .tl, .tv, .tn, .rl, .rleg, .al i');
   for (i = 0; i < tr.length; i++) if (tr[i].scrollWidth > tr[i].clientWidth + 1) warns.push('testo tagliato: ' + nm(tr[i]) + ' "' + tr[i].textContent.substr(0, 40) + '"');
-  // etichette del grafico dentro il viewBox
-  var svg = document.querySelector('#chart svg');
+  var cut = document.querySelectorAll('.ag .at, .al span, .s1 .w'), nc = 0;
+  for (i = 0; i < cut.length; i++) if (cut[i].scrollWidth > cut[i].clientWidth + 1) nc++;
+  // etichette del grafico: dentro il viewBox e mai sovrapposte
+  var svg = document.querySelector('#chart svg'), svgTexts = [];
   if (svg){
-    var vb = svg.viewBox.baseVal, ts = svg.querySelectorAll('text');
+    var vb = svg.viewBox.baseVal, ts = svg.querySelectorAll('text:not(.halo)'), bbs = [];
     for (i = 0; i < ts.length; i++){
       var bb = ts[i].getBBox();
+      bbs.push(bb);
       if (bb.x < -0.5 || bb.y < -0.5 || bb.x + bb.width > vb.width + 0.5 || bb.y + bb.height > vb.height + 0.5)
         problems.push('grafico: etichetta fuori dal viewBox "' + ts[i].textContent + '" (' + Math.round(bb.x) + ',' + Math.round(bb.y) + ',' + Math.round(bb.x + bb.width) + ',' + Math.round(bb.y + bb.height) + ' / ' + vb.width + 'x' + vb.height + ')');
+    }
+    for (i = 0; i < bbs.length; i++) for (var j = i + 1; j < bbs.length; j++){
+      var p = bbs[i], q = bbs[j];
+      if (p.x < q.x + q.width - 1 && p.x + p.width > q.x + 1 && p.y < q.y + q.height - 2 && p.y + p.height > q.y + 2)
+        problems.push('grafico: etichette sovrapposte "' + ts[i].textContent + '" e "' + ts[j].textContent + '"');
     }
     var sr = svg.getBoundingClientRect(); if (sr.height < 20) problems.push('grafico troppo basso');
   } else problems.push('grafico assente');
@@ -221,13 +234,90 @@ function check(){
       if (hit[i].className === 'rl' || hit[i].className === 'rleg') warns.push(msg); else problems.push(msg);
     }
   }
-  var nt = document.querySelectorAll('#tiles .tile').length; if (nt !== 4) problems.push('tessere meteorologo: ' + nt + ' invece di 4');
+  var hid = document.querySelectorAll('#sport .s2'), nh = 0;
+  for (i = 0; i < hid.length; i++) if (getComputedStyle(hid[i]).display === 'none') nh++;
+  if (nh) problems.push('sport: ' + nh + ' seconda riga (orario) nascosta per mancanza di spazio');
+  var nt = document.querySelectorAll('#tiles .tile').length; if (nt !== opts.tiles) problems.push('tessere meteorologo: ' + nt + ' invece di ' + opts.tiles);
   var na = document.querySelectorAll('#agenda .ag:not(.none)').length, ns = document.querySelectorAll('#sport .s').length;
   if (na > 3) problems.push('agenda oggi: ' + na + ' righe (>3)');
   if (ns > 2) problems.push('sport: ' + ns + ' righe (>2)');
   if (document.querySelector('#radar .fr') === null) problems.push('radar: nessun fotogramma');
   var rt = document.getElementById('rTime'); if (!rt || !/min fa|adesso/.test(rt.textContent)) problems.push('radar: etichetta eta\' mancante');
-  return {problems: problems, warns: warns, info: 'agenda ' + na + ' | sport ' + ns + ' | radar "' + (rt ? rt.textContent : '') + '" | ' + document.getElementById('radar').offsetWidth + 'x' + document.getElementById('radar').offsetHeight};
+
+  // ---- testi visibili: dimensione minima + dati per il contrasto ----
+  function parse(c){ var m = c && c.match(/rgba?\(([^)]+)\)/); if (!m) return null; var a = m[1].split(/[ ,\/]+/).map(parseFloat); return [a[0], a[1], a[2], a.length > 3 ? a[3] : 1]; }
+  var items = [], minSeen = 999, sizeViol = [];
+  for (i = 0; i < all.length; i++){
+    var el = all[i], tg = el.tagName.toLowerCase();
+    if (tg === 'script' || tg === 'style' || el.closest('#shade') || el.closest('#fully-overlay') || el.closest('#fully-overlay2') || el.closest('.ra') || (el.getAttribute && /(^| )halo( |$)/.test(el.getAttribute('class') || ''))) continue;
+    var tn = [], k;
+    for (k = 0; k < el.childNodes.length; k++) if (el.childNodes[k].nodeType === 3 && /\S/.test(el.childNodes[k].nodeValue)) tn.push(el.childNodes[k]);
+    if (!tn.length) continue;
+    var cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, rg = document.createRange();
+    for (k = 0; k < tn.length; k++){ rg.selectNode(tn[k]); var rr = rg.getBoundingClientRect(); if (rr.width < 0.5 || rr.height < 0.5) continue;
+      x0 = Math.min(x0, rr.left); y0 = Math.min(y0, rr.top); x1 = Math.max(x1, rr.right); y1 = Math.max(y1, rr.bottom); }
+    if (x1 < x0) continue;
+    var er = el.getBoundingClientRect();
+    x0 = Math.max(x0, er.left); x1 = Math.min(x1, er.right); y0 = Math.max(y0, er.top); y1 = Math.min(y1, er.bottom);
+    if (x1 - x0 < 1 || y1 - y0 < 1) continue;
+    var isSvg = !!el.closest('svg'), fs = parseFloat(cs.fontSize), measure = isSvg ? er.height : fs, label = nm(el) + ' "' + el.textContent.trim().substr(0, 30) + '"';
+    if (isSvg){ if (measure < opts.minSvg) sizeViol.push(label + ' altezza ' + measure.toFixed(1) + 'px < ' + opts.minSvg); }
+    else if (measure < opts.minPx) sizeViol.push(label + ' font ' + measure.toFixed(1) + 'px < ' + opts.minPx);
+    if (measure < minSeen) minSeen = measure;
+    items.push({label: label, color: parse(isSvg ? cs.fill : cs.color), fs: fs, weight: parseInt(cs.fontWeight, 10) || 400,
+      x: x0, y: y0, w: x1 - x0, h: y1 - y0, skip: !!el.closest('#colon')});
+  }
+  sizeViol.forEach(function(v){ problems.push('FONT TROPPO PICCOLO: ' + v); });
+
+  // ---- spazio sprecato: card con piu' del 25% di altezza vuota sotto l'ultimo contenuto ----
+  var cards = document.querySelectorAll('.card'), waste = [];
+  for (i = 0; i < cards.length; i++){
+    var cd = cards[i];
+    if (cd.classList.contains('chartcard')) continue;
+    var cr = cd.getBoundingClientRect(), maxB = cr.top, de2 = cd.querySelectorAll('*');
+    for (k = 0; k < de2.length; k++){
+      var d2 = de2[k], t2 = d2.tagName.toLowerCase(), own = false, m;
+      for (m = 0; m < d2.childNodes.length; m++) if (d2.childNodes[m].nodeType === 3 && /\S/.test(d2.childNodes[m].nodeValue)) own = true;
+      if (!own && t2 !== 'svg' && t2 !== 'img') continue;
+      var dr2 = d2.getBoundingClientRect(); if (dr2.height < 1) continue;
+      if (dr2.bottom > maxB) maxB = dr2.bottom;
+    }
+    var frac = (cr.bottom - maxB) / cr.height;
+    if (frac > 0.25) waste.push(nm(cd) + ' vuoto ' + Math.round(frac * 100) + '% (' + Math.round(cr.bottom - maxB) + 'px su ' + Math.round(cr.height) + ')');
+  }
+  waste.forEach(function(w){ problems.push('SPAZIO SPRECATO: ' + w); });
+
+  var rad = document.getElementById('radar');
+  return {problems: problems, warns: warns, items: items, minSeen: minSeen, ellissi: nc,
+    info: 'agenda ' + na + ' | sport ' + ns + ' | radar "' + (rt ? rt.textContent : '') + '" | ' + rad.offsetWidth + 'x' + rad.offsetHeight + ' | chart ' + (svg ? svg.getBoundingClientRect().width + 'x' + svg.getBoundingClientRect().height : '-')};
+}
+
+// campiona lo sfondo dietro ogni testo dallo screenshot a testo trasparente e calcola il rapporto WCAG
+async function contrast(page, shot, items){
+  return page.evaluate(async function(a){
+    function lin(v){ v = v / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    function lum(c){ return 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]); }
+    function med(arr){ arr.sort(function(x, y){ return x - y; }); return arr[Math.floor(arr.length / 2)]; }
+    var img = new Image();
+    await new Promise(function(res, rej){ img.onload = res; img.onerror = rej; img.src = 'data:image/png;base64,' + a.b64; });
+    var cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+    var cx = cv.getContext('2d'); cx.drawImage(img, 0, 0);
+    var out = [];
+    a.items.forEach(function(it){
+      if (it.skip || !it.color) return;
+      var x = Math.max(0, Math.floor(it.x)), y = Math.max(0, Math.floor(it.y)), w = Math.min(cv.width - x, Math.ceil(it.w)), h = Math.min(cv.height - y, Math.ceil(it.h));
+      if (w < 1 || h < 1) return;
+      var d = cx.getImageData(x, y, w, h).data, R = [], G = [], B = [], step = Math.max(1, Math.floor(Math.sqrt(w * h / 3000)));
+      for (var yy = 0; yy < h; yy += step) for (var xx = 0; xx < w; xx += step){ var o = (yy * w + xx) * 4; R.push(d[o]); G.push(d[o + 1]); B.push(d[o + 2]); }
+      var bg = [med(R), med(G), med(B)], al = it.color[3], fg = [0, 1, 2].map(function(k){ return it.color[k] * al + bg[k] * (1 - al); });
+      var l1 = lum(fg), l2 = lum(bg), ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+      var large = (it.fs >= 24 && it.weight >= 700) || it.fs >= 32, need = large ? 3 : 4.5;
+      out.push({label: it.label, ratio: ratio, need: need, fg: fg.map(Math.round).join(','), bg: bg.join(','), fs: it.fs});
+    });
+    return out;
+  }, {b64: shot.toString('base64'), items: items});
 }
 
 async function renderOne(browser, file, w, h, ph, overlay){
@@ -251,7 +341,7 @@ async function renderOne(browser, file, w, h, ph, overlay){
   await page.goto('file://' + path.join(ROOT, file));
   if (overlay){
     await page.evaluate(function(){
-      var css = 'position:fixed;z-index:50;pointer-events:none;font-weight:700;font-size:7vh;line-height:1;white-space:nowrap;color:rgba(255,120,180,.55);';
+      var css = 'position:fixed;z-index:50;pointer-events:none;font-weight:700;font-size:6.2vh;line-height:1;white-space:nowrap;color:rgba(255,120,180,.55);';
       var a = document.createElement('div'); a.id = 'fully-overlay'; a.textContent = 'PLUS Features Activated';
       a.style.cssText = css + 'left:45%;top:5%;';
       var b = document.createElement('div'); b.id = 'fully-overlay2'; b.textContent = 'Please Get a License';
@@ -262,16 +352,39 @@ async function renderOne(browser, file, w, h, ph, overlay){
   await page.waitForTimeout(3500);
   var name = file.replace('.html', '') === 'index' ? 'galaxy' : 'ipad';
   var png = path.join(OUT, name + '-' + ph.name + '.png');
-  await page.screenshot({path: png});
-  var res = await page.evaluate(check);
+  var shot = await page.screenshot({path: png});
+  var isG = name === 'galaxy';
+  var res = await page.evaluate(check, {tiles: isG ? 3 : 4, minPx: isG ? 22 : 24.5, minSvg: isG ? 18 : 20});
+  // screenshot con testo trasparente: serve per misurare lo sfondo reale dietro ogni scritta
+  await page.addStyleTag({content: '* { color: transparent !important; text-shadow: none !important; } svg text { fill: transparent !important; } #fully-overlay, #fully-overlay2 { display: none !important; }'});
+  var shot2 = await page.screenshot();
+  var cr = await contrast(page, shot2, res.items), lowest = 99, nlow = 0;
+  cr.forEach(function(c){
+    if (c.ratio < lowest) lowest = c.ratio;
+    if (c.ratio < c.need){ nlow++; res.problems.push('CONTRASTO ' + c.ratio.toFixed(2) + ':1 < ' + c.need + ' ' + c.label + ' testo rgb(' + c.fg + ') sfondo rgb(' + c.bg + ') ' + c.fs.toFixed(0) + 'px'); }
+  });
+  if (HALF){
+    var p2 = await ctx.newPage();
+    await p2.setViewportSize({width: w / 2, height: h / 2});
+    await p2.setContent('<body style="margin:0;background:#000"><img style="display:block" width="' + (w / 2) + '" height="' + (h / 2) + '" src="data:image/png;base64,' + shot.toString('base64') + '"></body>');
+    await p2.waitForTimeout(200);
+    await p2.screenshot({path: path.join(OUT, name + '-' + ph.name + '-half.png')});
+    await p2.close();
+  }
   console.log(name + ' ' + ph.name + ' (' + w + 'x' + h + ')' + (overlay ? ' +overlay' : '') + ' -> ' + png);
   console.log('  ' + res.info);
+  console.log('  testo piu\' piccolo: ' + res.minSeen.toFixed(1) + 'px | contrasto piu\' basso: ' + lowest.toFixed(2) + ':1 su ' + cr.length + ' testi | ellissi volute: ' + res.ellissi);
+  var low = cr.slice().sort(function(a, b){ return a.ratio - b.ratio; }).slice(0, 2);
+  low.forEach(function(c){ console.log('    piu\' basso: ' + c.ratio.toFixed(2) + ':1 ' + c.label + ' testo rgb(' + c.fg + ') su rgb(' + c.bg + ')'); });
+  STATS.minPx[name] = Math.min(STATS.minPx[name] || 999, res.minSeen);
+  STATS.minCr = Math.min(STATS.minCr, lowest);
   res.problems.forEach(function(p){ console.log('  PROBLEMA: ' + p); });
   res.warns.forEach(function(p){ console.log('  avviso: ' + p); });
-  if (!res.problems.length) console.log('  controllo overflow: ok');
+  if (!res.problems.length) console.log('  controlli (overflow, font minimo, contrasto, spazio): ok');
   await ctx.close();
   return res.problems.length;
 }
+var STATS = {minPx: {}, minCr: 99};
 
 (async function(){
   fs.mkdirSync(OUT, {recursive: true});
@@ -281,6 +394,7 @@ async function renderOne(browser, file, w, h, ph, overlay){
   for (i = 0; i < SC.length; i++) bad += await renderOne(browser, 'index.html', 1024, 600, SC[i], OVERLAY);
   for (i = 0; i < SC.length; i++) bad += await renderOne(browser, 'ipad.html', 1024, 768, SC[i], false);
   await browser.close();
+  console.log('Font piu\' piccolo: Galaxy ' + (STATS.minPx.galaxy || 0).toFixed(1) + 'px, iPad ' + (STATS.minPx.ipad || 0).toFixed(1) + 'px | contrasto piu\' basso ' + STATS.minCr.toFixed(2) + ':1');
   console.log(bad ? 'TOTALE PROBLEMI: ' + bad : 'Nessun problema rilevato');
   process.exit(bad ? 1 : 0);
 })().catch(function(e){ console.error(e); process.exit(2); });

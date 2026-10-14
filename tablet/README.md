@@ -9,17 +9,18 @@ Pannello a muro per Galaxy Tab 2 (Android 6, Fully Kiosk) e iPad 2 (iOS 9, Safar
 | iPad 2 | https://miglio100588.github.io/miglio-digital/tablet/ipad.html | 1024x768 |
 
 ## File
-- `index.html`: layout Galaxy. `ipad.html`: layout iPad. Ognuno definisce `var LAYOUT = {...}` e include `app.js?v=5`.
+- `index.html`: layout Galaxy. `ipad.html`: layout iPad. Ognuno definisce `var LAYOUT = {...}` e include `app.js?v=6`.
 - `app.js`: tutta la logica (meteo, tessere meteorologo, aria, daylight, luna, radar, sport, agenda). CONFIG in testa. Ogni render controlla che l'elemento esista.
 - `tools/mock-render.js`: screenshot con dati finti. `docs/`: piani e foto di riferimento.
 
-## Layout
-- Galaxy (1024x600): colonna sinistra (36%) con orologio (due punti lampeggianti), data, meteo attuale con temperatura colorata, arco solare + fase lunare, radar grande in basso (sotto "Please Get a License"; la legenda sta sopra la scritta). Colonna destra: grafico 24 ore con linea colorata per temperatura, 6 giorni, 4 tessere meteorologo, box unico OGGI + SPORT con gli avvisi in testa (mai sotto "PLUS Features Activated").
-- iPad (1024x768): fascia alta (orologio + arco + luna, meteo attuale, box OGGI + SPORT con avvisi), grafico 24 ore a tutta larghezza, in basso radar grande (58%) + colonna con 6 giorni in lista e 4 tessere 2x2.
-- Tessere: PIOGGIA 3H (nowcast 15 min), MOTO OGGI/DOMANI (verdetto OTTIMA/DISCRETA/NO), PRESSIONE (trend 3 h), ARIA (AQI europeo + polline; se la chiamata fallisce diventa UV).
-- Radar: un solo fotogramma fermo, aggiornato ogni 15 min, con etichetta "Radar HH:MM · N min fa" e legenda.
-- OGGI: max 3 eventi di oggi non ancora finiti (se il box non basta, le righe si riducono); SPORT: i 2 eventi piu' vicini.
-- LAYOUT: `name`, `agendaMax`, `chartHours`, `chartVh`, `days`, `safe` (+ opzionali `daysList`, `shortSun`, `alertMax`, `sportMax`).
+## Layout (v5: leggibilita' a distanza, WCAG 2.2)
+- Galaxy (1024x600): colonna sinistra 38%: card ORA (orologio 15vh, data, "Tramonto 18:29 · tra 8h 44m"), card ADESSO (icona, temperatura 12vh, condizione, percepita, vento; "dati delle HH:MM" in arancio solo se piu' vecchi di 30 min), radar grande. Colonna destra: grafico 24 ore (icone e orari ogni 3 h, temperature ogni 6 h, min/max in grande), 5 giorni, 3 tessere (MOTO, PIOGGIA 3H, ARIA/PRESSIONE alternate ogni 10 s), box OGGI + SPORT alto quanto serve con gli avvisi in testa.
+- iPad (1024x768): stessa struttura a due colonne (37% / resto) con ADESSO completo (percepita, umidita', raffiche), 5 giorni in lista con barre, e in basso a tutta larghezza 4 tessere (MOTO, PIOGGIA 3H, PRESSIONE, ARIA).
+- Tutto il testo sta in card scure; dimensioni minime 3,7vh (Galaxy) e 3,3vh (iPad); vedi `CLAUDE.md` (Regole di leggibilita').
+- Tessere: PIOGGIA 3H (nowcast 15 min), MOTO OGGI/DOMANI (OTTIMA/DISCRETA/NO), PRESSIONE (trend 3 h), ARIA (AQI europeo + polline; se la chiamata fallisce diventa UV).
+- Radar: un solo fotogramma fermo, aggiornato ogni 15 min, con etichetta "Radar HH:MM · N min fa" e legenda "debole … forte".
+- OGGI: max 3 eventi di oggi non ancora finiti; SPORT: i 2 eventi piu' vicini su due righe (squadra, poi giorno e ora). Se il box non basta si riduce a gradini: titoli, righe agenda, seconda riga sport.
+- LAYOUT: `name`, `agendaMax`, `chartHours`, `chartVh`, `days`, `safe`, `chartFs`/`chartBig`/`chartIc` (vh dei testi e icone del grafico) + opzionali `daysList`, `tilesAlt`, `fullMeta`, `sunTra`, `sportCh`, `tightDash`, `alertMax`, `sportMax`.
 
 ## Fonti
 | Blocco | Fonte | Refresh |
@@ -42,9 +43,9 @@ Agenda: colonne `titolo | data | ora | fine | calendario | aggiornato`; mostra s
 ## Provare in locale
 ```
 cd tablet
-NODE_PATH=$(npm root -g) node tools/mock-render.js --overlay   # 6 immagini: galaxy/ipad day, night, dry (Galaxy con scritte di Fully)
+NODE_PATH=$(npm root -g) node tools/mock-render.js --overlay --half   # 6 immagini: galaxy/ipad day, night, dry (Galaxy con scritte di Fully) + copie -half.png al 50%
 NODE_PATH=$(npm root -g) node tools/mock-render.js --dry       # solo gli scenari puliti (asciutto, niente avvisi)
 ```
-Scrive i PNG in `tools/out/` (ignorata da git) e stampa il controllo overflow (esce con codice 1 se ci sono problemi: overflow, testo fuori schermo, avvisi/tessere sotto le scritte di Fully, piu' di 3 eventi oggi o 2 sport, radar senza etichetta). Per vedere le pagine a mano: `python3 -m http.server` e aprire `index.html` / `ipad.html` (le API reali devono essere raggiungibili).
+Scrive i PNG in `tools/out/` (ignorata da git) e stampa il controllo overflow (esce con codice 1 se ci sono problemi: overflow, testo fuori schermo, avvisi/tessere sotto le scritte di Fully, font sotto il minimo, contrasto WCAG insufficiente, card con piu' del 25% di vuoto, etichette del grafico sovrapposte, orario sport nascosto, numero tessere, piu' di 3 eventi oggi o 2 sport, radar senza etichetta); stampa anche il font piu' piccolo e il contrasto piu' basso di ogni scenario. Per vedere le pagine a mano: `python3 -m http.server` e aprire `index.html` / `ipad.html` (le API reali devono essere raggiungibili).
 
 Vincolo: solo JavaScript ES5 in `app.js` e nelle pagine (niente let/const/arrow/template/fetch). Ad ogni modifica a `app.js` aumentare `?v=N` in entrambe le pagine.

@@ -9,7 +9,7 @@
 <title>Meteo Rovigo</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden}
-body{color:#fff;font-family:"Helvetica Neue",Roboto,Arial,sans-serif;background:#070B14;
+body{color:#fff;font-weight:500;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;background:#070B14;
   background-image:linear-gradient(180deg,#070B14 0%,#121A2B 100%);-webkit-transition:background 3s;transition:background 3s}
 body.p-dawn  {background-image:linear-gradient(180deg,#232A55 0%,#7A4C78 55%,#E3875F 100%)}
 body.p-day   {background-image:linear-gradient(180deg,#1F5FA6 0%,#3F86CC 60%,#7DB6E8 100%)}
@@ -37,156 +37,144 @@ body.p-dusk{background-image:
   radial-gradient(circle at 77% 12%,rgba(255,255,255,.65) 0,rgba(255,255,255,0) 2.2px),
   radial-gradient(circle at 95% 7%,rgba(255,255,255,.8) 0,rgba(255,255,255,0) 2.6px),
   linear-gradient(180deg,#0F1430 0%,#3D2A5C 60%,#9B4E5E 100%)}
+
 #shade{position:fixed;left:0;top:0;right:0;bottom:0;background:#000;opacity:0;pointer-events:none;-webkit-transition:opacity 3s;transition:opacity 3s;z-index:20}
-.mut{color:rgba(255,255,255,.66)}
-.card{background:-webkit-linear-gradient(top,rgba(255,255,255,.08),rgba(0,0,0,.24));background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.24));
-  border-top:1px solid rgba(255,255,255,.18);border-radius:1.6vh;box-sizing:border-box}
-h2{font-weight:500;text-transform:uppercase;letter-spacing:.14em;margin:0 0 .6vh;color:rgba(255,255,255,.7)}
+/* tutto il testo sta dentro card scure (contrasto WCAG AA); testo secondario al massimo rgba(255,255,255,.86) */
+.card{background:rgba(6,14,32,.62);border-top:1px solid rgba(255,255,255,.22);border-radius:1.6vh;box-sizing:border-box}
+body.p-night .card,body.p-dusk .card{background:rgba(0,0,0,.45)}
+.mut{color:rgba(255,255,255,.86)}
+b{font-weight:700}
 .colon{opacity:1;-webkit-transition:opacity .8s;transition:opacity .8s}
 .colon.dim{opacity:.35}
+.dp{display:inline-block;width:.8em;height:1.1em;vertical-align:-.12em;margin-right:.2em}
 /* avvisi */
-.al{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.3;border-radius:1.2vh;white-space:nowrap;overflow:hidden}
-.al i{font-style:normal;font-weight:700;margin-right:1vw;-webkit-flex:0 0 auto;flex:0 0 auto}
+.al{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.25;border-radius:1.2vh;white-space:nowrap;overflow:hidden;font-weight:700}
+.al i{font-style:normal;margin-right:1vw;-webkit-flex:0 0 auto;flex:0 0 auto}
 .al span{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.al.y{background:rgba(242,177,52,.92);color:#2A1D00}
-.al.o{background:rgba(232,112,42,.94);color:#fff}
-.al.r{background:rgba(200,40,40,.94);color:#fff}
+.al.y{background:#F5B735;color:#241800}
+.al.o{background:#B8481A;color:#fff}
+.al.r{background:#C62828;color:#fff}
 /* agenda di oggi + sport */
-.ag{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.35;white-space:nowrap;overflow:hidden}
-.ag i{-webkit-flex:0 0 1.5vh;flex:0 0 1.5vh;width:1.5vh;height:1.5vh;border-radius:50%;margin-right:.8vw}
-.ag .aw{-webkit-flex:0 0 auto;flex:0 0 auto;color:#FFD98A;margin-right:.8vw}
+.ag{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.25;white-space:nowrap;overflow:hidden}
+.ag .aw{-webkit-flex:0 0 auto;flex:0 0 auto;color:#FFD98A;font-weight:600;margin-right:.7vw}
 .ag .at{-webkit-flex:1;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.ag.none{color:rgba(255,255,255,.6)}
-.s:last-child{margin-bottom:0}
-.s1{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.3;white-space:nowrap;overflow:hidden}
-.s2{line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.k{-webkit-flex:0 0 5vh;flex:0 0 5vh;font-weight:700;border-radius:.6vh;text-align:center;margin-right:.8vw}
-.k.f1{background:#E10600}.k.mi{background:#C8102E}.k.it{background:#1F6FD6}.k.u21{background:#4C9BE8}
-.s1 .w{overflow:hidden;text-overflow:ellipsis}
-.s2 .q{color:#FFD98A}
-.s2 .c{color:rgba(255,255,255,.7)}
+.ag.none{color:rgba(255,255,255,.86)}
+.s1{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;line-height:1.1;white-space:nowrap;overflow:hidden}
+.s2{line-height:1.05;white-space:nowrap;overflow:hidden}
+.k{-webkit-flex:0 0 auto;flex:0 0 auto;font-weight:700;border-radius:.6vh;text-align:center;margin-right:.7vw;padding:0 .5vw;color:#fff}
+.k.f1{background:#C40500}.k.mi{background:#B30D26}.k.it{background:#1A5FC0}.k.u21{background:#1A5FC0}
+.s1 .w{overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.s2 .q{color:#FFD98A;font-weight:600}
+.s2 .c{color:rgba(255,255,255,.86)}
+h2{font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0;color:rgba(255,255,255,.86)}
 /* tessere da meteorologo */
-.tile{position:relative;overflow:hidden;border-top-width:2px;border-top-style:solid}
-.tl{text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.72);white-space:nowrap}
+.tile{position:relative;overflow:hidden;border-top-width:3px;border-top-style:solid}
+.tl{text-transform:uppercase;letter-spacing:.03em;font-weight:600;color:rgba(255,255,255,.86);white-space:nowrap;line-height:1.1}
 .tv{white-space:nowrap;overflow:hidden}
-.tv b{font-weight:500;line-height:1.05}
-.tv u{text-decoration:none;color:rgba(255,255,255,.7);margin-left:.4em}
-.tn{color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tb{position:absolute;right:.7vw;display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end}
-.tb i{display:block;width:.33vw;margin-left:.15vw;border-radius:1px}
+.tv b{font-weight:700;line-height:1.05}
+.tv u{text-decoration:none;font-weight:600;color:rgba(255,255,255,.86);margin-left:.3em}
+.tn{color:rgba(255,255,255,.86);white-space:nowrap;overflow:hidden;line-height:1.1}
+.tb{position:absolute;display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end}
+.tb i{display:block;border-radius:1px}
 /* radar */
-.radar{position:relative;overflow:hidden;border-radius:1.6vh;background:#0B1220;border-top:1px solid rgba(255,255,255,.18);box-sizing:border-box}
+.radar{position:relative;overflow:hidden;border-radius:1.6vh;background:#0B1220;border-top:1px solid rgba(255,255,255,.22);box-sizing:border-box}
 .radar .lay{position:absolute;left:0;top:0;right:0;bottom:0}
 .radar img{position:absolute;display:block;border:0;max-width:none}
 .radar .fr{opacity:.8}
-.radar .pin{position:absolute;width:1.7vh;height:1.7vh;margin:-.85vh 0 0 -.85vh;border-radius:50%;background:#FF3B30;border:2px solid #fff;box-shadow:0 0 0 .7vh rgba(255,59,48,.38),0 0 2.2vh rgba(255,59,48,.7)}
-.radar .rl{position:absolute;left:.9vw;top:.8vh;font-size:2.3vh;background:rgba(0,0,0,.55);padding:.2vh .8vw;border-radius:.8vh;white-space:nowrap}
-.radar .rleg{position:absolute;right:.8vw;font-size:1.9vh;background:rgba(0,0,0,.55);padding:.3vh .7vw;border-radius:.8vh;white-space:nowrap;color:rgba(255,255,255,.9)}
-.radar .rleg i{display:inline-block;width:1.9vh;height:1.9vh;border-radius:.3vh;vertical-align:middle;margin:0 .1vw}
-.radar .ra{position:absolute;left:.8vw;bottom:.4vh;font-size:1.4vh;color:rgba(255,255,255,.55);max-width:96%;white-space:nowrap;overflow:hidden}
-.foot{font-size:2vh;height:2.4vh;line-height:2.4vh;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.err{color:#FFB4A8}
+.radar .pin{position:absolute;width:2.6vh;height:2.6vh;margin:-1.3vh 0 0 -1.3vh;border-radius:50%;background:#FF3B30;border:3px solid #fff;box-shadow:0 0 0 .8vh rgba(255,59,48,.45),0 0 2.2vh rgba(255,59,48,.8)}
+.radar .rl{position:absolute;left:.9vw;top:.9vh;background:rgba(0,0,0,.72);padding:.2vh .8vw;border-radius:.8vh;white-space:nowrap;line-height:1.2}
+.radar .rleg{position:absolute;right:.9vw;background:rgba(0,0,0,.72);padding:.2vh .8vw;border-radius:.8vh;white-space:nowrap;color:#fff;line-height:1.2}
+.radar .rleg i{display:inline-block;width:3vh;height:3vh;border-radius:.4vh;vertical-align:middle;margin:0 .1vw}
+.radar .ra{position:absolute;left:.8vw;bottom:.4vh;font-size:1.4vh;color:rgba(255,255,255,.6);max-width:96%;white-space:nowrap;overflow:hidden}
+.stale{color:#FFB066;font-weight:600;line-height:1.15}
+.stale:empty{display:none}
+html,body{margin:0;height:100%;overflow:hidden}
+/* ===== iPad 1024x768: 1vh = 7,68 px. Minimo testo 3,3vh (25 px), peso 500+ ===== */
 #app{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;height:100%;box-sizing:border-box;padding:2vh 2vw}
-h2{font-size:2vh}
-/* fascia alta */
-.top{display:-webkit-flex;display:flex;-webkit-flex:0 0 30vh;flex:0 0 30vh;height:30vh}
-.top>.card{padding:1.1vh 1.1vw;min-width:0;height:30vh;overflow:hidden}
-.ca{-webkit-flex:0 0 calc(25% - .67vw);flex:0 0 calc(25% - .67vw);margin-right:1vw}
-.cb{-webkit-flex:0 0 calc(24% - .67vw);flex:0 0 calc(24% - .67vw);margin-right:1vw}
-.cc{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column}
-.clock{font-size:10.8vh;font-weight:300;line-height:.95;letter-spacing:-.02em;white-space:nowrap}
-.date{font-size:3vh;margin-top:.4vh;white-space:nowrap}
-.sm{display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end;margin-top:.5vh}
-.sun{-webkit-flex:1;flex:1;min-width:0}
-.sun svg{display:block;width:100%;height:6.2vh}
-.sunrow{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;font-size:2vh;margin-top:.2vh;white-space:nowrap}
-.sunrow b{color:#fff;font-weight:500}
-.moon{-webkit-flex:0 0 9vh;flex:0 0 9vh;text-align:center;margin-left:.8vw}
-.moon svg{display:block;width:5.8vh;height:5.8vh;margin:0 auto}
-.mp{font-size:2vh;line-height:1.25;color:rgba(255,255,255,.78)}
-.now{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center}
-.now .ic{width:10vh;height:10vh;-webkit-flex:0 0 auto;flex:0 0 auto}
-.temp{font-size:10.5vh;font-weight:300;line-height:1;margin-left:.6vw;white-space:nowrap}
-.desc{font-size:2.3vh;margin:.6vh 0 .6vh;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:2vh;line-height:1.4;white-space:nowrap}
-.meta b{color:#fff;font-weight:500}
-.alerts .al{font-size:2.2vh;padding:.2vh .8vw;margin-bottom:.4vh}
-.cols{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;min-height:0}
-.colA{-webkit-flex:0 0 51%;flex:0 0 51%;padding-right:.8vw;box-sizing:border-box;min-width:0}
-.colB{-webkit-flex:1;flex:1;min-width:0;border-left:1px solid rgba(255,255,255,.12);padding-left:.8vw}
-.ag{font-size:2.3vh;margin-bottom:.3vh}
-.s{margin-bottom:.3vh}
-.s1{font-size:2.3vh}
-.s2{font-size:2vh;padding-left:calc(5vh + .8vw)}
-.k{font-size:1.8vh;line-height:2.5vh}
-/* fascia centrale */
-.mid{margin-top:1vh;height:21vh;-webkit-flex:0 0 21vh;flex:0 0 21vh;padding:.6vh 1.2vw .2vh}
-.mid svg{display:block;width:100%;height:20vh}
-/* fascia bassa */
-.bot{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;min-height:0;margin-top:1vh}
-.radar{-webkit-flex:0 0 calc(58% - .5vw);flex:0 0 calc(58% - .5vw);margin-right:1vw}
-.radar .rleg{bottom:3.2vh}
-.rcol{-webkit-flex:1;flex:1;min-width:0;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column}
-.days{-webkit-flex:1;flex:1;min-height:0;padding:.3vh .9vw;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column}
-.dr{-webkit-flex:1;flex:1;min-height:0;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;border-top:1px solid rgba(255,255,255,.1)}
+.main{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;min-height:0}
+.left{-webkit-flex:0 0 37%;flex:0 0 37%;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-width:0;margin-right:1.6vw}
+.right{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-width:0}
+.left>*+*,.right>*+*{margin-top:1vh}
+.ora{padding:.7vh 1.1vw .9vh;-webkit-flex:none;flex:none}
+.clock{font-size:16vh;font-weight:400;line-height:1;letter-spacing:-.01em;white-space:nowrap}
+.date{font-size:3.8vh;line-height:1.15;white-space:nowrap}
+.sunrow{font-size:3.4vh;line-height:1.2;margin-top:.3vh;white-space:nowrap}
+.now{padding:.8vh 1.1vw;-webkit-flex:none;flex:none}
+.nrow{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center}
+.now .ic{width:9vh;height:9vh;-webkit-flex:0 0 auto;flex:0 0 auto}
+.temp{font-size:12vh;font-weight:500;line-height:1;margin-left:.4vw;-webkit-flex:0 0 auto;flex:0 0 auto}
+.nowside{-webkit-flex:1;flex:1;min-width:0;margin-left:.6vw}
+.desc{font-size:3.5vh;font-weight:600;line-height:1.1}
+.feel{font-size:3.4vh;line-height:1.15;margin-top:.3vh;white-space:nowrap}
+.meta{font-size:3.4vh;line-height:1.2;margin-top:.3vh;white-space:nowrap}
+.radar{-webkit-flex:1;flex:1;min-height:20vh}
+.radar .rl{font-size:3.4vh}
+.radar .rleg{bottom:1vh;font-size:3.4vh}
+.chartcard{-webkit-flex:1;flex:1;min-height:24vh;position:relative}
+#chart{position:absolute;left:0;top:0;right:0;bottom:0}
+#chart svg{display:block;width:100%;height:100%}
+.days{-webkit-flex:none;flex:none;padding:.3vh 1vw;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column}
+.dr{height:4.8vh;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;border-top:1px solid rgba(255,255,255,.16)}
 .dr:first-child{border-top:0}
-.dr .dn{-webkit-flex:0 0 6.6vw;flex:0 0 6.6vw;font-size:2.3vh;color:rgba(255,255,255,.8);white-space:nowrap}
-.dr .ic{-webkit-flex:0 0 3.3vh;flex:0 0 3.3vh;width:3.3vh;height:3.3vh;margin-right:.6vw}
-.dr .dmin{-webkit-flex:0 0 3.3vw;flex:0 0 3.3vw;font-size:2.4vh;color:#BFE3FF;text-align:right}
-.dr .dbar{-webkit-flex:1;flex:1;position:relative;height:.9vh;margin:0 .7vw;border-radius:.5vh;background:rgba(255,255,255,.16)}
+.dr .dn{-webkit-flex:0 0 7.5vw;flex:0 0 7.5vw;font-size:3.8vh;font-weight:600;white-space:nowrap}
+.dr .ic{-webkit-flex:0 0 4.2vh;flex:0 0 4.2vh;width:4.2vh;height:4.2vh;margin-right:.8vw}
+.dr .dmin{-webkit-flex:0 0 5.4vw;flex:0 0 5.4vw;font-size:3.8vh;font-weight:600;color:#9BD3FF;text-align:right}
+.dr .dbar{-webkit-flex:1;flex:1;position:relative;height:1vh;margin:0 .9vw;border-radius:.5vh;background:rgba(255,255,255,.22)}
 .dr .dbar i{position:absolute;top:0;bottom:0;border-radius:.5vh}
-.dr .dmax{-webkit-flex:0 0 3.3vw;flex:0 0 3.3vw;font-size:2.4vh;color:#FFD98A;font-weight:500}
-.dr .dpp{-webkit-flex:0 0 4vw;flex:0 0 4vw;font-size:2vh;color:#BFE3FF;text-align:right;white-space:nowrap}
-.tiles{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;-webkit-align-content:space-between;align-content:space-between;margin-top:1vh;height:21vh}
-.tile{-webkit-flex:0 0 calc(50% - .4vw);flex:0 0 calc(50% - .4vw);height:calc(50% - .5vh);min-width:0;padding:.5vh .7vw}
-.tl{font-size:1.6vh}
-.tv b{font-size:3.5vh}.tv b.sm{font-size:2.6vh}.tv u{font-size:1.7vh}
-.tn{font-size:1.75vh;margin-top:.2vh}
-.tb{top:2.6vh;height:3.4vh}
-.foot{margin-top:.5vh}
+.dr .dmax{-webkit-flex:0 0 5.4vw;flex:0 0 5.4vw;font-size:3.8vh;font-weight:700;color:#FFD98A}
+.dr .dpp{-webkit-flex:0 0 8.4vw;flex:0 0 8.4vw;font-size:3.4vh;font-weight:600;color:#9BD3FF;text-align:right;white-space:nowrap}
+.tiles{display:-webkit-flex;display:flex;height:16vh;margin-top:1vh;-webkit-flex:none;flex:none}
+.tile{-webkit-flex:1;flex:1;min-width:0;margin-right:.9vw;padding:.6vh .8vw}
+.tile:last-child{margin-right:0}
+.tl{font-size:3.3vh}
+.tv b{font-size:6vh}.tv b.sm{font-size:5vh}.tv u{font-size:3.3vh}
+.tn{font-size:3.4vh}
+.tb{right:.7vw;top:4.2vh;height:5vh}
+.tb i{width:.3vw;margin-left:.1vw}
+.box{-webkit-flex:none;flex:none;max-height:28vh;overflow:hidden;padding:.6vh 1vw .7vh;display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column}
+.alerts .al{font-size:3.6vh;padding:.2vh 1vw;margin-bottom:.5vh}
+.cols{display:-webkit-flex;display:flex}
+.colA{-webkit-flex:0 0 50%;flex:0 0 50%;padding-right:1vw;box-sizing:border-box;min-width:0}
+.colB{-webkit-flex:1;flex:1;min-width:0;border-left:1px solid rgba(255,255,255,.2);padding-left:1vw}
+h2{font-size:3.3vh;line-height:1.25}
+.box.noh h2{display:none}
+.ag{font-size:3.8vh}
+.s1{font-size:3.4vh}
+.s2{font-size:3.3vh}
+.k{font-size:3.3vh;line-height:1.2}
 </style>
 </head>
 <body class="p-night">
 <div id="shade"></div>
 <div id="app">
-  <div class="top">
-    <div class="card ca">
-      <div class="clock" id="clock">--:--</div>
-      <div class="date mut" id="date"></div>
-      <div class="sm">
-        <div class="sun"><div id="sunSvg"></div></div>
-        <div class="moon" id="moon"></div>
+  <div class="main">
+    <div class="left">
+      <div class="card ora"><div class="clock" id="clock">--:--</div><div class="date" id="date"></div><div class="sunrow" id="sunRow"></div></div>
+      <div class="card now">
+        <div class="nrow"><div id="nowIc"></div><div class="temp" id="nowT">--°</div><div class="nowside"><div class="desc" id="desc">Caricamento…</div></div></div>
+        <div class="meta" id="meta"></div>
+        <div class="stale" id="stale"></div>
       </div>
-      <div class="sunrow mut" id="sunRow"></div>
+      <div class="radar" id="radar"><div class="lay" id="rBase"></div><div class="lay" id="rFrames"></div><div class="lay" id="rLabels"></div>
+        <div class="pin" id="rPin"></div><div class="rl" id="rTime">Radar…</div>
+        <div class="rleg">debole <i style="background:#7FD6F5"></i><i style="background:#2F6FE0"></i><i style="background:#FFD22E"></i><i style="background:#E5322D"></i> forte</div>
+        <div class="ra">RainViewer · Esri, HERE, Garmin, © OpenStreetMap</div></div>
     </div>
-    <div class="card cb">
-      <div class="now"><div id="nowIc"></div><div class="temp" id="nowT">--°</div></div>
-      <div class="desc" id="desc">Caricamento…</div>
-      <div class="meta mut" id="meta"></div>
-    </div>
-    <div class="card cc" id="box">
-      <div class="alerts" id="alerts"></div>
-      <div class="cols">
-        <div class="colA"><h2>Oggi</h2><div id="agenda"></div></div>
-        <div class="colB"><h2>Sport</h2><div id="sport"></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="card mid"><div id="chart"></div></div>
-  <div class="bot">
-    <div class="radar" id="radar"><div class="lay" id="rBase"></div><div class="lay" id="rFrames"></div><div class="lay" id="rLabels"></div>
-      <div class="pin" id="rPin"></div><div class="rl" id="rTime">Radar…</div>
-      <div class="rleg">pioggia: debole <i style="background:#7FD6F5"></i><i style="background:#2F6FE0"></i><i style="background:#FFD22E"></i><i style="background:#E5322D"></i> forte</div>
-      <div class="ra">RainViewer · Esri, HERE, Garmin, © OpenStreetMap</div></div>
-
-    <div class="rcol">
+    <div class="right">
+      <div class="card chartcard"><div id="chart"></div></div>
       <div class="card days" id="days"></div>
-      <div class="tiles" id="tiles"></div>
+      <div class="card box" id="box">
+        <div class="alerts" id="alerts"></div>
+        <div class="cols">
+          <div class="colA"><h2>Oggi</h2><div id="agenda"></div></div>
+          <div class="colB"><h2>Sport</h2><div id="sport"></div></div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="foot" id="foot"></div>
+  <div class="tiles" id="tiles"></div>
 </div>
-<script>var LAYOUT = {name: 'ipad', agendaMax: 3, chartHours: 25, chartVh: 20, days: 6, daysList: true, shortSun: true, alertMax: 2, safe: false};</script>
-<script src="app.js?v=5"></script>
+<script>var LAYOUT = {name: 'ipad', agendaMax: 3, chartHours: 25, chartVh: 26, days: 5, daysList: true, fullMeta: true, sunTra: false, sportCh: true, tightDash: true, alertMax: 2, chartFs: 3.3, chartBig: 3.6, chartIc: 4.6, safe: false};</script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
