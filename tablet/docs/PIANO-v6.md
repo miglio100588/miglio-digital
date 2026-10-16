@@ -2,11 +2,13 @@
 
 Pianificato da Opus il 14/10 dopo le foto reali di Galaxy e iPad. Si esegue in Claude Code: Opus rilegge e affina, un subagente Sonnet esegue, Opus verifica sugli screenshot prima di ogni merge.
 
-## Ordine di lavoro di venerdì
-1. **Migrazione** del repo: `PIANO-migrazione-repo.md` (Cloudflare Pages + Pages Functions).
+## Ordine di lavoro di venerdì (agenti: vedi "Flusso di lavoro" in CLAUDE.md)
+1. **Migrazione** del repo: `PIANO-migrazione-repo.md` (Cloudflare Pages + Pages Functions). Esecuzione: `implementatore`; verifica: `collaudatore`.
 2. **Fix iPad**: dati meteo e radar non arrivano (sezione A). Richiede le Pages Functions del punto 1.
-3. **Canale TV** sempre visibile (sezione B).
-4. **Giro di frontend design** per un layout accattivante (sezione C), con la skill `frontend-design`.
+3. **Correzioni funzionali**: canale TV (B), legenda radar (E), MOTO alba→tramonto (F).
+4. **Tema di default "cruscotto BMW classico"** (H) + giro di frontend design (C): proposte del `designer`, scelta di Alberto, poi implementazione.
+5. **Web radio** (D).
+6. **Nuovi indicatori** (G): Alberto ne sceglie 2–4 dalla tabella.
 
 ## A. iPad: "Caricamento…", "Meteo non disponibile", "Radar non disponibile"
 Situazione al 14/10 (foto, iPad 2 iOS 9.3.5, uguale in Safari e in Chrome, che su iOS usa lo stesso motore WebKit):
@@ -49,3 +51,65 @@ Situazione al 14/10 (foto, iPad 2 iOS 9.3.5, uguale in Safari e in Chrome, che s
 ## Riferimenti
 - Foto del 14/10 (Galaxy v5 e iPad con i dati non caricati): mostrate in chat. Prima del giro di design, chiedi ad Alberto di rimetterle su Drive in `Claude/tablet-meteo/foto/`.
 - Stato del codice: v5 (`app.js?v=6`), commit `aafde5d` su `miglio-digital`.
+
+
+## D. Web radio
+- Un **piccolo pulsante** (icona nota musicale, discreto ma toccabile, almeno 48 px) apre una fila di **4 stazioni predefinite**: **Radio Malibù**, **Radio Gemini**, **Radio 105**, **Rai Radio 1**. Un tocco fa partire la stazione, un secondo tocco la ferma. La stazione attiva è evidenziata e il suo nome compare nel pulsante finché suona.
+- Tecnica: `<audio>` HTML5 con gli URL di streaming (mp3 o aac). L'`esploratore` deve trovare e verificare gli URL ufficiali e attuali di ogni stazione, preferendo https, e controllare che suonino su Android 6 (Fully) e iOS 9.
+- Attenzione:
+  - la pagina è in https: uno stream http è contenuto misto e viene bloccato, e iOS 9 può rifiutare certificati recenti. Valuta un proxy dello stream con Pages Functions (verifica i limiti di Cloudflare per lo streaming lungo) oppure la radio solo sul Galaxy;
+  - in Fully attiva l'autoplay audio se serve;
+  - la radio parte solo con un tocco, mai da sola;
+  - se la radio sta suonando, il ricaricamento automatico delle 6 ore aspetta che si fermi.
+
+## E. Legenda del radar
+- La legenda "debole ■■■■ forte" va **in fondo al radar, a tutta larghezza**, anche sopra la scritta "Please Get a License": Alberto la preferisce lì perché è più evidente.
+
+## F. MOTO: finestra reale alba → tramonto
+- Alberto va in moto **dall'alba al tramonto**. La finestra è `sunrise → sunset` presi da `daily.sunrise/sunset` di Open-Meteo, non più 08–19.
+  - Prima del tramonto: finestra di oggi, solo le ore **rimanenti** da adesso al tramonto.
+  - Dopo il tramonto: tutta la finestra di domani ("MOTO DOMANI").
+- Mostra anche **la fascia migliore** (ore consecutive asciutte e più calde), ad esempio "Meglio 11–16".
+- Nota con il motivo del giudizio: "Freddo all'alba 6°", "Pioggia dalle 15".
+- Soglie come nel PIANO-v4 §3, ricalcolate sulla nuova finestra.
+
+## G. Indicatori "da utente" (Alberto ne sceglie 2–4)
+| Indicatore | Cosa dice | Dati | Perché |
+|---|---|---|---|
+| **Fotovoltaico oggi** | "Produzione stimata 14 kWh", con il confronto con ieri | `shortwave_radiation_sum` di Open-Meteo × 4 kWp × circa 0,8 | Impianto da 4 kWp con batteria da 7 kWh |
+| **Freddo in moto** | "A 90 km/h percepiti 4°" | Wind chill sulla minima della finestra moto a 90 km/h | Decide come vestirsi |
+| **Nebbia** | "Nebbia probabile 03–08" | `visibility` < 1 km oppure temperatura − rugiada < 1° | Polesine, moto e auto |
+| **Rispetto a ieri** | "Oggi +3° più caldo di ieri" | `past_days=1` | Immediato, anche per i genitori |
+| **Riscaldamento** | "Minima stanotte 8° alle 06" | Minima notturna | Si regola sulle minime notturne |
+| **Bucato fuori** | "Bucato: sì fino alle 16" | Sole + vento + umidità < 70% + niente pioggia | Utile in casa |
+| **Brina/ghiaccio** | "Brina all'alba" | Temperatura ≤ 2° e rugiada vicina | Moto, auto, piante |
+| **Luce** | "Luce 11h 02m · −2 min rispetto a ieri" | Alba e tramonto di oggi e di ieri | Effetto "wow" stagionale |
+| **Livello Adige** | Livello a Boara Pisani con tendenza | ARPAV/CFD Veneto, da verificare se il dato è aperto | Boara è sull'Adige |
+- Ogni indicatore diventa una tessera con le regole della v5. Sul Galaxy la tessera a rotazione può far girare 2–3 indicatori ogni 10 s.
+
+## H. Tema di default "cruscotto BMW classico" (giorno e notte)
+**Richiesta di Alberto (16/10)**: il tema predefinito deve somigliare al classico cruscotto analogico BMW storico (E30/E34/E36, anni '80–'90), con variante giorno e notte secondo alba e tramonto. Il tema "daylight" attuale resta disponibile come alternativa (pulsante discreto o parametro `?tema=daylight`).
+
+**Linguaggio visivo** (ispirazione, senza loghi né marchi):
+- **Quadranti neri opachi** con cornice cromata/grigio scuro sottile e lieve vignettatura interna, su fondo nero o antracite. Niente sfondi colorati.
+- **Strumenti circolari con lancetta**:
+  - temperatura attuale come grande quadrante principale "tachimetro", con scala min–max della giornata, tacche e numeri bianchi, lancetta arancio-rossa con perno centrale;
+  - quadranti piccoli tipo "contagiri/carburante/temperatura acqua" per pressione, pioggia 3h e vento;
+  - la tessera MOTO come "econometro".
+- **Tipografia**: numeri bianchi in stile DIN condensato. Usa font di sistema condensati (`"Roboto Condensed", "sans-serif-condensed"` su Android, `"Avenir Next Condensed"` su iOS) con fallback; nessun web font pesante.
+- **Spie "Check Control"**: gli avvisi (grandine, vento, gelo, allerte ufficiali) diventano spie con icona e testo, ambra per l'attenzione e rossa per il pericolo, in una fila come le spie del cruscotto. Spente o grigie quando non c'è nulla.
+- **Display LCD** per orologio, data e righe testuali (agenda, sport con canale TV): cifre su fondo verde-grigio scuro o nero, in stile computer di bordo.
+- **Giorno**: numeri e tacche bianchi, lancette arancio-rosso (#FF4F1A circa), accenti bianchi.
+- **Notte** (dopo il tramonto, fino all'alba): **illuminazione arancio-ambra** tipica BMW (#FF7A00 / #FFA000 circa) su numeri, tacche e testi, lancette rosso-arancio luminose, fondo nero pieno. Il dimming notturno resta.
+- Radar e grafico 24 ore dentro "quadranti" coerenti: cornice tonda o rettangolare stondata, tacche, colori ambra di notte.
+
+**Vincoli**:
+- leggibilità v5 (minimi 22/25 px, contrasto AA: ambra e bianco su nero passano ampiamente; verifica comunque con `mock-render`);
+- quadranti e lancette in SVG inline (ES5, niente canvas pesante); animazione della lancetta solo al cambio di valore, con una transizione CSS breve;
+- niente loghi, stemmi o nomi di marchio nell'interfaccia: è un'ispirazione stilistica.
+
+**Processo**:
+- il `designer` prepara 2 proposte del tema per Galaxy e iPad (A: fedele, quadranti grandi; B: ibrida, un quadrante grande più tessere LCD), giorno e notte, in `tools/proposte/`;
+- Alberto sceglie;
+- l'`implementatore` porta la scelta in `index.html`, `ipad.html` e `app.js`;
+- il `collaudatore` verifica.

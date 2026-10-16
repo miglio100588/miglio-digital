@@ -27,13 +27,25 @@ Cos'è: pannello a muro meteo + radar + agenda + sport per casa di Alberto (Via 
 
 ## Prossimi passi (venerdì 16/10, in Claude Code)
 1. Migrazione: `docs/PIANO-migrazione-repo.md`.
-2. Fix iPad (meteo e radar non caricano su iOS 9), canale TV, giro di frontend design: `docs/PIANO-v6.md`.
+2. `docs/PIANO-v6.md`: fix iPad (meteo e radar non caricano su iOS 9), canale TV, **tema di default "cruscotto BMW classico"** giorno/notte, giro di frontend design, web radio (4 stazioni), legenda radar in fondo, MOTO alba→tramonto, nuovi indicatori.
 
-## Flusso di lavoro (obbligatorio)
-1. **Pianifica con Opus**: ogni modifica parte da un piano scritto in `docs/PIANO-*.md` (obiettivo, file toccati, specifiche di layout, criteri di accettazione, test).
-2. **Esegui con un subagente Sonnet**: il piano viene passato a un subagente con `model: sonnet`, che implementa e prova.
-3. **Verifica prima del deploy**: chi ha pianificato rilegge diff e screenshot (`tools/mock-render.js`) e solo dopo fa commit + push. Mai pubblicare senza screenshot controllati.
-4. Deploy = push su `main`; GitHub Pages ripubblica in circa 1 minuto. Il tablet si ricarica da solo ogni 6 ore (o Reload da Fully).
+## Flusso di lavoro (obbligatorio): Opus decide, Haiku e Sonnet lavorano
+La sessione principale gira su **Opus** (`.claude/settings.json`: `"model": "opus"`). Alberto dà gli input a Opus; Opus non scrive codice da solo se non per ritocchi di poche righe.
+
+| Fase | Chi | Modello | Note |
+|---|---|---|---|
+| Capire, raccogliere informazioni | `esploratore` | Haiku | Ricerche nel codice, nelle API e nelle fonti, in sola lettura. Più esploratori in parallelo se le domande sono indipendenti |
+| Pianificare | Opus (sessione principale) | Opus | Scrive o aggiorna `docs/PIANO-*.md`: obiettivo, sezioni numerate, file, criteri di accettazione |
+| Proposte grafiche | `designer` | Sonnet | Mockup A/B/C in `tools/proposte/`; Alberto sceglie |
+| Implementare | `implementatore` | Sonnet | Riceve il percorso del piano e le sezioni (non il testo incollato). Sezioni indipendenti in parallelo solo se toccano file diversi |
+| Collaudare | `collaudatore` | Haiku | Dopo ogni implementazione: check, mock-render, screenshot. Se KO, Opus rimanda all'implementatore solo il report |
+| Verifica finale | Opus | Opus | Rilegge diff e PNG `-half`, poi commit; push/merge secondo le regole sopra |
+
+Regole di efficienza:
+- Opus non legge file interi se basta un report: delega a esploratore e collaudatore, che rispondono in poche righe.
+- Ai subagenti si passa il percorso del piano e i numeri di sezione, mai lunghi testi incollati.
+- Un giro implementazione → collaudo per sezione grande; per i ritocchi piccoli, un solo giro finale.
+- Deploy = push su `main` (oggi GitHub Pages, dopo la migrazione Cloudflare Pages). Il tablet si ricarica da solo ogni 6 ore (o Reload da Fully).
 
 ## Vincoli tecnici (non negoziabili)
 - **Solo JavaScript ES5**: niente `let`/`const`, arrow function, template literal, `fetch`, Promise, classi, spread, `Array.from`, `Object.assign`. WebView di Android 6 e Safari 9.
@@ -84,6 +96,9 @@ gviz restituisce la data come `Date(2026,9,15)` e l'ora come `Date(1899,11,30,18
 - Radar statico (niente animazione), il più grande possibile. Effetto WOW ma leggibile a 2 metri.
 - **Canale TV sempre visibile** per ogni evento sportivo, su entrambi i dispositivi: nessun compromesso. Si guadagna spazio con il layout, non togliendo il canale.
 - Vuole un layout accattivante: giro di frontend design previsto (vedi `docs/PIANO-v6.md`).
+- Tema di default: cruscotto analogico BMW classico (anni '80–'90), giorno e notte secondo alba e tramonto. Il daylight attuale resta come tema alternativo.
+- Va in moto dall'alba al tramonto: l'indicatore MOTO usa quella finestra.
+- Web radio preferite: Radio Malibù, Radio Gemini, Radio 105, Rai Radio 1.
 - Testi in italiano, stile asciutto.
 
 ## Regole di leggibilità (v5, WCAG 2.2; leggono anche i genitori di Alberto)
